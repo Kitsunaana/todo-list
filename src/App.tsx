@@ -55,9 +55,26 @@ class TodosStore {
 export const createTodosStore = () => new TodosStore()
 const todosStore = createTodosStore()
 
+const backgroundStyles = {
+  working: {
+    backgroundImage: `linear-gradient(315deg, #0000 48%, #ab47bc 50%, #0000 52%)`,
+    backgroundSize: "8px 8px",
+    borderLeft: "4px solid #ab47bc"
+  },
+  done: {
+    backgroundImage: `linear-gradient(315deg, #0000 48%, #9ccc65 50%, #0000 52%)`,
+    backgroundSize: "8px 8px",
+    borderLeft: "4px solid #9ccc65"
+  },
+  open: {
+    backgroundImage: `linear-gradient(315deg, #0000 48%, #26c6da 50%, #0000 52%)`,
+    backgroundSize: "8px 8px",
+    borderLeft: "4px solid #26c6da"
+  }
+}
+
 export const App = observer(() => {
   const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef<InputRef | null>(null)
   const methods = useForm<FormFields>({
     defaultValues: { search: "" }
   })
@@ -85,7 +102,6 @@ export const App = observer(() => {
           render={({ field }) => (
             <Input
               {...field}
-              ref={inputRef}
               placeholder="Поиск"
               onBlur={() => setIsFocused(false)}
               onFocus={() => setIsFocused(true)}
@@ -95,11 +111,17 @@ export const App = observer(() => {
 
         <List
           size="small"
-          header={<div>Header</div>}
-          footer={<div>Footer</div>}
-          bordered
           dataSource={todosStore.filteredTodos}
-          renderItem={(item: Todo) => <List.Item>{item.description}</List.Item>}
+          renderItem={(item: Todo) => (
+            <List.Item
+              style={{
+                border: "1px solid #ccc",
+                ...backgroundStyles[item.status],
+              }}
+            >
+              {item.description}
+            </List.Item>
+          )}
         />
       </Space>
     </>

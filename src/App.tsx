@@ -1,77 +1,54 @@
-import {Input, InputRef, List, Space} from 'antd';
-import {todosApi} from "./shared/api/todos-api.ts";
+import {Collapse, CollapseProps, Divider, Flex, Input, Popover, Space, Switch} from 'antd';
 import {Controller, useForm} from "react-hook-form";
-import {useEffect, useRef, useState} from "react";
-import {makeAutoObservable, reaction} from "mobx";
-import { MobxQuery } from "./shared/lib/mobx-react-query.ts";
-import { queryClient } from "./shared/config/query-client.ts";
+import {useEffect, useState} from "react";
 import { observer } from "mobx-react-lite"
-import {Todo} from "./shared/types/todos/types.ts";
+import {IconButton} from "./shared/ui/icon-button.tsx";
+import {TodoItem} from "./entities/ui/todo-item.tsx";
+import {todosStore} from "./entities";
+import { Typography } from 'antd';
+import styled from 'styled-components';
+import { Types } from "./entities";
+import * as React from "react";
+
+const { Text } = Typography;
 
 interface FormFields {
   search: string
 }
 
-class TodosStore {
-  search = ""
+export const PreviewSettingsDivider = styled(Divider)`
+  margin: 4px 0px !important;
+  border-color: #575555 !important;
 
-  constructor() {
-    makeAutoObservable(this)
-
-    reaction(
-      () => this.search,
-      () => this.filteredTodos
-    )
+  span {
+    font-weight: 400;
   }
 
-  todosQuery = new MobxQuery(() => ({
-    queryKey: ["todos"],
-    queryFn: todosApi.getAll
-  }), queryClient)
+`
 
-  get todos() {
-    return this.todosQuery.data
-  }
-
-  get todosResult() {
-    return this.todosQuery.result
-  }
-
-  changeSearch(value: string) {
-    if (this.search === value) return
-
-    this.search = value.trim()
-  }
-
-  get filteredTodos() {
-    if (this.search === "") return this.todosQuery.data.data
-
-    return this.todos.data.filter(todo => {
-      return todo.description.toUpperCase().includes(this.search.toUpperCase())
-    })
-  }
-}
-
-export const createTodosStore = () => new TodosStore()
-const todosStore = createTodosStore()
-
-const backgroundStyles = {
-  working: {
-    backgroundImage: `linear-gradient(315deg, #0000 48%, #ab47bc 50%, #0000 52%)`,
-    backgroundSize: "8px 8px",
-    borderLeft: "4px solid #ab47bc"
-  },
-  done: {
-    backgroundImage: `linear-gradient(315deg, #0000 48%, #9ccc65 50%, #0000 52%)`,
-    backgroundSize: "8px 8px",
-    borderLeft: "4px solid #9ccc65"
-  },
-  open: {
-    backgroundImage: `linear-gradient(315deg, #0000 48%, #26c6da 50%, #0000 52%)`,
-    backgroundSize: "8px 8px",
-    borderLeft: "4px solid #26c6da"
-  }
-}
+export const TodoPreviewSettings = observer(() => {
+  return (
+    <div style={{ minWidth: 250 }}>
+      <PreviewSettingsDivider>Скрыть из заголовка</PreviewSettingsDivider>
+      <Flex vertical gap={4}>
+        {Object.entries(todosStore.settings).map(([key, value]) => (
+          <Flex gap={8} align="center" key={key}>
+            <Switch
+              value={value}
+              onChange={(checked) => (
+                todosStore.onChangePreviewSettings(
+                  key as Types.Key,
+                  checked as Types.Value
+                )
+              )}
+            />
+            <Text style={{ fontSize: 16 }}>{key}</Text>
+          </Flex>
+        ))}
+      </Flex>
+    </div>
+  )
+})
 
 export const App = observer(() => {
   const [isFocused, setIsFocused] = useState(false);
@@ -93,36 +70,100 @@ export const App = observer(() => {
     return () => window.removeEventListener("keydown", cbEvent)
   }, [isFocused, methods]);
 
+  const onChange = (key: string | string[]) => {
+    console.log(key);
+  };
+
+  const items = todosStore.filteredTodos.map((todo): CollapseProps['items'][number] => ({
+    key: todo.id,
+    label: todo.description,
+    children: (
+      <Text>{todo.publishedAt}</Text>
+    )
+  }))
+
   return (
     <>
       <Space direction="vertical" size="small" style={{ width: "100%" }}>
-        <Controller
-          name="search"
-          control={methods.control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              placeholder="Поиск"
-              onBlur={() => setIsFocused(false)}
-              onFocus={() => setIsFocused(true)}
-            />
-          )}
-        />
+        <Flex gap={4}>
+          <Controller
+            name="search"
+            control={methods.control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                placeholder="Поиск"
+                onBlur={() => setIsFocused(false)}
+                onFocus={() => setIsFocused(true)}
+              />
+            )}
+          />
 
-        <List
-          size="small"
-          dataSource={todosStore.filteredTodos}
-          renderItem={(item: Todo) => (
-            <List.Item
-              style={{
-                border: "1px solid #ccc",
-                ...backgroundStyles[item.status],
-              }}
-            >
-              {item.description}
-            </List.Item>
-          )}
-        />
+          <Popover
+            placement="bottomRight"
+            content={(
+              <TodoPreviewSettings />
+            )}
+            trigger="click"
+          >
+            <IconButton
+              name="settings"
+              color="#616161"
+              fontSize={22}
+            />
+          </Popover>
+
+          <IconButton
+            name="add"
+            fontSize={22}
+            color="#66bb6a"
+          />
+
+          <IconButton
+            name="reload"
+            fontSize={22}
+            color="#fb8c00"
+            onClick={() => todosStore.todosResult.refetch()}
+          />
+
+        </Flex>
+
+        <Collapse
+          expandIconPosition="right"
+          onChange={onChange}
+        >
+          {items.map((item) => {
+            const findTodo = todosStore.getTodoById(item.key as number)
+
+            return (
+              <TodoItem
+                key={item.key as number}
+                isShowHatch={todosStore.settings.isShowHatch}
+                header={(
+                  <Flex
+                    wrap
+                    align="center"
+                    justify="space-between"
+                    style={{ width: "100%" }}
+                  >
+                    <div>{findTodo.description}</div>
+                    <IconButton
+                      name="actions"
+                      color="#1e88e5"
+                      fontSize={22}
+                      onClick={(event) => {
+                        event.stopPropagation()
+                      }}
+                    />
+                  </Flex>
+                )}
+                status={findTodo.status ?? "working"}
+              >
+                {item.children}
+              </TodoItem>
+            )
+          })}
+        </Collapse>
       </Space>
     </>
   )

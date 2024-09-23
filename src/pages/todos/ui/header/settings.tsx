@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {Divider, Flex, Switch} from "antd";
 import {observer} from "mobx-react-lite";
-import {todosStore, Types} from "../../../../entities/todo";
+import {todosStore, Types} from "@entities/todo";
 import { Typography } from 'antd';
 
 const { Text } = Typography;

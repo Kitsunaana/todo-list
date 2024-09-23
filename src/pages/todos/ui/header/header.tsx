@@ -1,15 +1,18 @@
 import {Controller, useForm} from "react-hook-form";
 import {Button, Flex, Input, Popover} from "antd";
-import {Icon} from "../../../../shared/ui/icon.tsx";
-import {IconButton} from "../../../../shared/ui/icon-button.tsx";
-import {todosStore} from "../../../../entities/todo";
+import {Icon} from "@shared/ui/icon";
+import {IconButton} from "@shared/ui/icon-button";
+import {todosStore} from "@entities/todo";
 import {useEffect, useState} from "react";
-import {TodoPreviewSettings} from "./settings.tsx";
-import {FormFields} from "../../todos-page.tsx";
+import {TodoPreviewSettings} from "./settings";
+import {FormFields} from "../../todos-page";
+import { observer } from "mobx-react-lite";
+import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 
-export const Header = () => {
+export const Header = observer(() => {
   const [isFocused, setIsFocused] = useState(false);
   const methods = useForm<FormFields>()
+  const { onOpen } = useUpsertDialog()
 
   useEffect(() => {
     const cbEvent = (event: KeyboardEvent) => {
@@ -58,6 +61,7 @@ export const Header = () => {
         name="add"
         fontSize={20}
         color="#66bb6a"
+        onClick={onOpen}
       />
 
       <IconButton
@@ -68,4 +72,4 @@ export const Header = () => {
       />
     </Flex>
   )
-}
+})

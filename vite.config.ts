@@ -14,5 +14,10 @@ export default defineConfig({
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@app": path.resolve(__dirname, "./src/app"),
     }
+  },
+  server: {
+    watch: {
+      usePolling: true
+    }
   }
 })

@@ -3,6 +3,9 @@ const icons = {
   actions: "more_vert",
   settings: "tune",
   reload: "sync",
+  remove: "delete",
+  allDone: "done_all",
+  selected: "settings"
 } as const
 
 export type IconProps = {
@@ -16,7 +19,7 @@ export const Icon = (props: IconProps) => {
 
   return (
     <span
-      style={{ fontSize, color }}
+      style={{ fontSize: fontSize ?? 20, color }}
       className="material-symbols-outlined"
     >
       {icons[name]}

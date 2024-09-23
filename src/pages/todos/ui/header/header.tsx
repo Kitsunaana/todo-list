@@ -58,6 +58,18 @@ export const Header = observer(() => {
       </Popover>
 
       <IconButton
+        name="allDone"
+        fontSize={20}
+        color="#2196f3"
+      />
+
+      <IconButton
+        name="remove"
+        fontSize={20}
+        color="#e53935"
+      />
+
+      <IconButton
         name="add"
         fontSize={20}
         color="#66bb6a"

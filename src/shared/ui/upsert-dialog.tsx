@@ -23,6 +23,7 @@ const ModalHeader = styled("div")`
   height: 38px;
   border: 1px solid rgba(158, 158, 158, 0.25);
   justify-content: center;
+  margin-bottom: 8px;
 `
 
 interface UpsertDialogProps {

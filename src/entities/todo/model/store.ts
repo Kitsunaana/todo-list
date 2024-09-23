@@ -9,6 +9,10 @@ const initialSettings: TodoPreviewSettings = {
 }
 
 class TodosStore {
+  selected: Record<number, boolean> = {}
+  expanded: Record<number, boolean> = { 2: true, 5: true }
+
+  isShowSelected = false
   settings = initialSettings
   search = ""
 
@@ -49,6 +53,47 @@ class TodosStore {
 
   onChangePreviewSettings(key: Key, value: Value) {
     this.settings[key] = value
+  }
+
+  onToggleShowSeleted() {
+    this.isShowSelected = !this.isShowSelected
+  }
+
+  onToggleSelected(id: number) {
+    if (this.selected[id]) delete this.selected[id]
+    else this.selected[id] = true
+  }
+
+  onSelectAll() {
+    this.filteredTodos.forEach(todo => {
+      this.selected[todo.id] = true
+    })
+  }
+
+  onRemoveSeleted() {
+    Object.keys(this.selected).forEach(todoId => (
+      delete this.selected[todoId]
+    ))
+  }
+
+  onChangeCollapse(todoIds: string[]) {
+    this.expanded = {}
+
+    todoIds.forEach(todoId => {
+      this.expanded[todoId] = true
+    })
+  }
+
+  onExpandAll() {
+    this.filteredTodos.forEach(todo => {
+      this.expanded[todo.id] = true
+    })
+  }
+
+  onCollapseAll() {
+    this.filteredTodos.forEach(todo => {
+      delete this.expanded[todo.id]
+    })
   }
 }
 

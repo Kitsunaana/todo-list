@@ -1,4 +1,4 @@
-import {Collapse, CollapseProps, Flex, Input, Select, Typography} from "antd";
+import {Checkbox, Collapse, CollapseProps, Flex, Input, Select, Typography} from "antd";
 import {observer} from "mobx-react-lite";
 import {FormProvider, useForm} from "react-hook-form";
 import {Footer} from "./ui/footer/footer";
@@ -6,12 +6,26 @@ import {Header} from "./ui/header/header";
 import {todosStore, backgroundStyles} from "@entities/todo";
 import {Table} from "@shared/ui/table";
 import { UpsertDialog } from "@shared/ui/upsert-dialog";
+import { IconButton } from "@shared/ui/icon-button";
+import styled from "styled-components";
 
 const { Text } = Typography;
 
 export interface FormFields {
   search: string
 }
+
+const CustomCollapse = styled(Collapse)`
+  && .ant-collapse-header {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+  }
+
+  && .ant-collapse-expand-icon {
+    padding-inline-start: 4px !important;
+  }
+`
 
 const TodosPage = observer(() => {
   const methods = useForm<FormFields>({
@@ -20,16 +34,26 @@ const TodosPage = observer(() => {
 
   const onChange = (key: string | string[]) => {
     console.log(key);
+    todosStore.onChangeCollapse(Array.isArray(key) ? key : [key])
   };
 
   const items: CollapseProps["items"] = todosStore.filteredTodos.map((todo) => ({
     key: todo.id,
-    label: todo.description,
-    children: [(
-      <Flex key={todo.id}>
-        <Text>{todo.publishedAt}</Text>
+    label: (
+      <Flex key={todo.id} align="center" justify="space-between">
+        <Flex gap={8}>
+          {todosStore.isShowSelected && (
+            <Checkbox checked={todosStore.selected[todo.id]} onClick={(event) => {
+              event.stopPropagation()
+              todosStore.onToggleSelected(todo.id)
+            }} />
+          )}
+          <Text>{todo.description}</Text>
+        </Flex>
+        <IconButton name="actions" onClick={(event) => event.stopPropagation()} />
       </Flex>
-    )],
+    ),
+    children: [<Text key={todo.id}>{todo.publishedAt}</Text>],
     style: {
       ...backgroundStyles[todo.status],
       ...(!todosStore.settings.isShowHatch ? {} : {
@@ -55,7 +79,9 @@ const TodosPage = observer(() => {
           </FormProvider>
         )}
         content={(
-          <Collapse
+          <CustomCollapse
+            defaultActiveKey={Object.keys(todosStore.expanded)}
+            activeKey={Object.keys(todosStore.expanded)}
             expandIconPosition="end"
             onChange={onChange}
             items={items}

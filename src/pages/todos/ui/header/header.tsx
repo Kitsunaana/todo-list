@@ -1,11 +1,11 @@
 import {Controller, useForm} from "react-hook-form";
 import {Button, Flex, Input, Popover} from "antd";
-import {Icon} from "../../shared/ui/icon.tsx";
-import {IconButton} from "../../shared/ui/icon-button.tsx";
-import {todosStore} from "../../entities";
-import * as React from "react";
-import {FormFields, TodoPreviewSettings} from "../../App.tsx";
+import {Icon} from "../../../../shared/ui/icon.tsx";
+import {IconButton} from "../../../../shared/ui/icon-button.tsx";
+import {todosStore} from "../../../../entities/todo";
 import {useEffect, useState} from "react";
+import {TodoPreviewSettings} from "./settings.tsx";
+import {FormFields} from "../../todos-page.tsx";
 
 export const Header = () => {
   const [isFocused, setIsFocused] = useState(false);
@@ -43,7 +43,7 @@ export const Header = () => {
 
       <Popover
         content={(
-          <TodoPreviewSettings/>
+          <TodoPreviewSettings />
         )}
         trigger="click"
         placement="bottomRight"

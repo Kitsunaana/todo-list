@@ -1,7 +1,7 @@
 import {makeAutoObservable, reaction} from "mobx";
-import {MobxQuery} from "../../shared/lib/mobx-react-query.ts";
-import {todosApi} from "../../shared/api/todos-api.ts";
-import {queryClient} from "../../shared/config/query-client.ts";
+import {MobxQuery} from "../../../shared/lib/mobx-react-query.ts";
+import {todosApi} from "../../../shared/api/todos-api.ts";
+import {queryClient} from "../../../shared/config/query-client.ts";
 import {Key, TodoPreviewSettings, Value} from "./types.ts";
 
 const initialSettings: TodoPreviewSettings = {
@@ -36,20 +36,15 @@ class TodosStore {
 
   changeSearch(value: string) {
     if (this.search === value) return
-
     this.search = value.trim()
   }
 
   get filteredTodos() {
     if (this.search === "") return this.todosQuery.data.data
 
-    return this.todos.data.filter(todo => {
-      return todo.description.toUpperCase().includes(this.search.toUpperCase())
-    })
-  }
-
-  getTodoById(id: number) {
-    return this.filteredTodos.find((todo) => todo.id === id)
+    return this.todos.data.filter(todo => (
+      todo.description.toUpperCase().includes(this.search.toUpperCase())
+    ))
   }
 
   onChangePreviewSettings(key: Key, value: Value) {

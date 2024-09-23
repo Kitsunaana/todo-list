@@ -1,10 +1,9 @@
 import {validation} from "../lib/zod-validation.ts";
 import { TodoSchemas, TodoDto } from "../types"
 
-
 export const todosApi = {
   getAll: async (): Promise<TodoDto.GetTodosResponse> => {
-    const response = await fetch("https://cms.laurence.host/api/tasks", {
+    const response = await fetch("https://cms.laurence.host/api/tasks?sort=createdAt", {
       method: "GET",
       mode: "cors",
       credentials: "include",

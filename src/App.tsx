@@ -1,18 +1,21 @@
-import {Collapse, CollapseProps, Divider, Flex, Input, Popover, Space, Switch} from 'antd';
-import {Controller, useForm} from "react-hook-form";
-import {useEffect, useState} from "react";
+import {Collapse, CollapseProps, Divider, Flex, Switch} from 'antd';
+import {FormProvider, useForm} from "react-hook-form";
 import { observer } from "mobx-react-lite"
-import {IconButton} from "./shared/ui/icon-button.tsx";
-import {TodoItem} from "./entities/ui/todo-item.tsx";
 import {todosStore} from "./entities";
 import { Typography } from 'antd';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import { Types } from "./entities";
-import * as React from "react";
+import { TodoDto } from "./shared/types"
+import {Footer} from "./pages/ui/footer.tsx";
+import {Header} from "./pages/ui/header.tsx";
+import {Table} from "./shared/ui/table.tsx";
+import {IconButton} from "./shared/ui/icon-button.tsx";
+import {backgroundStyles, TodoItem} from "./entities/ui/todo-item.tsx";
+import {useMemo} from "react";
 
 const { Text } = Typography;
 
-interface FormFields {
+export interface FormFields {
   search: string
 }
 
@@ -25,6 +28,10 @@ export const PreviewSettingsDivider = styled(Divider)`
   }
 
 `
+
+const labels: Record<Types.Key, string> = {
+  isShowHatch: "Штриховку"
+}
 
 export const TodoPreviewSettings = observer(() => {
   return (
@@ -42,7 +49,7 @@ export const TodoPreviewSettings = observer(() => {
                 )
               )}
             />
-            <Text style={{ fontSize: 16 }}>{key}</Text>
+            <Text style={{ fontSize: 16 }}>{labels[key as Types.Key]}</Text>
           </Flex>
         ))}
       </Flex>
@@ -51,24 +58,9 @@ export const TodoPreviewSettings = observer(() => {
 })
 
 export const App = observer(() => {
-  const [isFocused, setIsFocused] = useState(false);
   const methods = useForm<FormFields>({
     defaultValues: { search: "" }
   })
-
-  useEffect(() => {
-    const cbEvent = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && isFocused) {
-        methods.handleSubmit((data) => {
-          todosStore.changeSearch(data.search)
-        })()
-      }
-    }
-
-    window.addEventListener("keydown", cbEvent)
-
-    return () => window.removeEventListener("keydown", cbEvent)
-  }, [isFocused, methods]);
 
   const onChange = (key: string | string[]) => {
     console.log(key);
@@ -79,92 +71,76 @@ export const App = observer(() => {
     label: todo.description,
     children: (
       <Text>{todo.publishedAt}</Text>
-    )
+    ),
+    style: {
+      ...backgroundStyles[todo.status],
+      ...(todosStore.settings.isShowHatch ? {} : {
+        backgroundImage: "unset"
+      })
+    }
   }))
 
   return (
-    <>
-      <Space direction="vertical" size="small" style={{ width: "100%" }}>
-        <Flex gap={4}>
-          <Controller
-            name="search"
-            control={methods.control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder="Поиск"
-                onBlur={() => setIsFocused(false)}
-                onFocus={() => setIsFocused(true)}
-              />
-            )}
-          />
-
-          <Popover
-            placement="bottomRight"
-            content={(
-              <TodoPreviewSettings />
-            )}
-            trigger="click"
-          >
-            <IconButton
-              name="settings"
-              color="#616161"
-              fontSize={22}
-            />
-          </Popover>
-
-          <IconButton
-            name="add"
-            fontSize={22}
-            color="#66bb6a"
-          />
-
-          <IconButton
-            name="reload"
-            fontSize={22}
-            color="#fb8c00"
-            onClick={() => todosStore.todosResult.refetch()}
-          />
-
-        </Flex>
-
+    <Table
+      header={(
+        <FormProvider {...methods}>
+          <Header />
+        </FormProvider>
+      )}
+      content={(
         <Collapse
-          expandIconPosition="right"
+          expandIconPosition="end"
           onChange={onChange}
-        >
-          {items.map((item) => {
-            const findTodo = todosStore.getTodoById(item.key as number)
-
-            return (
-              <TodoItem
-                key={item.key as number}
-                isShowHatch={todosStore.settings.isShowHatch}
-                header={(
-                  <Flex
-                    wrap
-                    align="center"
-                    justify="space-between"
-                    style={{ width: "100%" }}
-                  >
-                    <div>{findTodo.description}</div>
-                    <IconButton
-                      name="actions"
-                      color="#1e88e5"
-                      fontSize={22}
-                      onClick={(event) => {
-                        event.stopPropagation()
-                      }}
-                    />
-                  </Flex>
-                )}
-                status={findTodo.status ?? "working"}
-              >
-                {item.children}
-              </TodoItem>
-            )
-          })}
-        </Collapse>
-      </Space>
-    </>
+          items={items}
+          style={{
+            overflow: "hidden auto",
+            display: "flex",
+            flexFlow: "column",
+            WebkitBoxFlex: 1,
+          }}
+        />
+      )}
+      footer={<Footer />}
+    />
   )
 })
+
+{/*<Collapse
+            expandIconPosition="right"
+            onChange={onChange}
+          >
+            {mockItems.map((item) => {
+              // const findTodo = todosStore.getTodoById(item.key as number)
+
+              return (
+                <TodoItem
+                  key={item.key as number}
+                  isShowHatch={todosStore.settings.isShowHatch}
+                  header={(
+                    <Flex
+                      wrap
+                      align="center"
+                      justify="space-between"
+                      style={{ width: "100%" }}
+                    >
+                      <div>{findTodo.description}</div>
+                      <div>{"findTodo.description"}</div>
+                      <IconButton
+                        name="actions"
+                        color="#1e88e5"
+                        fontSize={22}
+                        onClick={(event) => {
+                          event.stopPropagation()
+                        }}
+                      />
+                    </Flex>
+                  )}
+                  // status={findTodo.status ?? "working"}
+                  status={"done"}
+                >
+                  {item.children}
+                </TodoItem>
+              )
+            })}
+          </Collapse>*/
+}

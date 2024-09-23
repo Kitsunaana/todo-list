@@ -3,7 +3,7 @@ import { TodoDto } from "../../shared/types"
 import styled, {css} from "styled-components";
 import * as React from "react";
 
-const backgroundStyles: Record<TodoDto.Todo["status"], React.CSSProperties> = {
+export const backgroundStyles: Record<TodoDto.Todo["status"], React.CSSProperties> = {
   working: {
     backgroundImage: `linear-gradient(315deg, #0000 48%, #ab47bc 50%, #0000 52%)`,
     backgroundSize: "8px 8px",
@@ -28,7 +28,11 @@ interface TodoItemProps {
   status: TodoDto.Todo["status"]
 }
 
-export const TodoItem = styled(Panel)<TodoItemProps>`
+export const TodoItem = styled((props: TodoItemProps) => {
+  const { isShowHatch, status, ...other } = props
+
+  return <Panel {...other} />
+})<TodoItemProps>`
   ${({ status }) => backgroundStyles[status]}
   ${({ isShowHatch }) => isShowHatch ? {} :  css`background-image: unset !important;`}  
   

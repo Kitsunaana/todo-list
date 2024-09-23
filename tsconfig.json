@@ -12,14 +12,27 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "allowImportingTsExtensions": "emitDeclarationOnly",
     "baseUrl": ".",
     "paths": {
-      "shared/*": ["./src/shared/*"],
-      "entities/*": ["./src/entities/*"],
-      "features/*": ["./src/features/*"],
-      "widgets/*": ["./src/widgets/*"],
-      "pages/*": ["./src/pages/*"],
-      "app/*": ["./src/app/*"]
+      "@shared/*": [
+        "./src/shared/*"
+      ],
+      "@entities/*": [
+        "./src/entities/*"
+      ],
+      "@features/*": [
+        "./src/features/*"
+      ],
+      "@widgets/*": [
+        "./src/widgets/*"
+      ],
+      "@pages/*": [
+        "./src/pages/*"
+      ],
+      "@app/*": [
+        "./src/app/*"
+      ]
     }
   },
   "ts-node": {
@@ -28,7 +41,6 @@
     }
   },
   "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
+    "src"
   ]
 }

@@ -3,8 +3,8 @@ import {observer} from "mobx-react-lite";
 import {FormProvider, useForm} from "react-hook-form";
 import {Footer} from "./ui/footer/footer.tsx";
 import {Header} from "./ui/header/header.tsx";
-import {Table} from "../../shared/ui/table.tsx";
-import {backgroundStyles, todosStore} from "../../entities/todo";
+import {todosStore, backgroundStyles} from "entities/todo";
+import {Table} from "shared/ui/table.tsx";
 
 const { Text } = Typography;
 
@@ -25,8 +25,8 @@ const TodosPage = observer(() => {
     key: todo.id,
     label: todo.description,
     children: [(
-      <Flex>
-        <Text key={todo.id}>{todo.publishedAt}</Text>
+      <Flex key={todo.id}>
+        <Text>{todo.publishedAt}</Text>
       </Flex>
     )],
     style: {

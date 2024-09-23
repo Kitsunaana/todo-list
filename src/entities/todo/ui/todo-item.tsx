@@ -1,4 +1,4 @@
-import { TodoDto } from "../../../shared/types"
+import { TodoDto } from "shared/types"
 import * as React from "react";
 
 export const backgroundStyles: Record<TodoDto.Todo["status"], React.CSSProperties> = {

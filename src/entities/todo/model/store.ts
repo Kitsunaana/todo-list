@@ -1,8 +1,8 @@
 import {makeAutoObservable, reaction} from "mobx";
-import {MobxQuery} from "../../../shared/lib/mobx-react-query.ts";
-import {todosApi} from "../../../shared/api/todos-api.ts";
-import {queryClient} from "../../../shared/config/query-client.ts";
 import {Key, TodoPreviewSettings, Value} from "./types.ts";
+import {MobxQuery} from "shared/lib/mobx-react-query.ts";
+import {todosApi} from "shared/api/todos-api.ts";
+import {queryClient} from "shared/config/query-client.ts";
 
 const initialSettings: TodoPreviewSettings = {
   isShowHatch: false

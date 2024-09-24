@@ -45,9 +45,7 @@ export const Header = observer(() => {
       />
 
       <Popover
-        content={(
-          <TodoPreviewSettings />
-        )}
+        content={<TodoPreviewSettings />}
         trigger="click"
         placement="bottomRight"
       >
@@ -57,17 +55,21 @@ export const Header = observer(() => {
         />
       </Popover>
 
-      <IconButton
-        name="allDone"
-        fontSize={20}
-        color="#2196f3"
-      />
+      {todosStore.selectedLength > 0 && (
+        <IconButton
+          name="allDone"
+          fontSize={20}
+          color="#2196f3"
+        />
+      )}
 
-      <IconButton
-        name="remove"
-        fontSize={20}
-        color="#e53935"
-      />
+      {todosStore.selectedLength > 0 && (
+        <IconButton
+          name="remove"
+          fontSize={20}
+          color="#e53935"
+        />
+      )}
 
       <IconButton
         name="add"

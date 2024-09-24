@@ -5,11 +5,17 @@ const icons = {
   reload: "sync",
   remove: "delete",
   allDone: "done_all",
-  selected: "settings"
+  selected: "settings",
+  edit: "edit",
+  addFavorite: "favorite",
+  doDone: "check",
+
 } as const
 
+export type IconNames = keyof typeof icons
+
 export type IconProps = {
-  name: keyof typeof icons
+  name: IconNames
   fontSize?: number
   color?: string
 }

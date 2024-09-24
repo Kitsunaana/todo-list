@@ -1,15 +1,12 @@
-import {Button, Checkbox, Collapse, CollapseProps, Flex, Input, Select, Typography} from "antd";
+import {Collapse, CollapseProps, Flex, Input, Select, Typography} from "antd";
 import {observer} from "mobx-react-lite";
 import {FormProvider, useForm} from "react-hook-form";
 import {Footer} from "./ui/footer/footer";
 import {Header} from "./ui/header/header";
-import {todosStore, backgroundStyles} from "@entities/todo";
+import {todosStore, backgroundStyles, TodoItem} from "@entities/todo";
 import {Table} from "@shared/ui/table";
 import { UpsertDialog } from "@shared/ui/upsert-dialog";
-import { IconButton } from "@shared/ui/icon-button";
 import styled from "styled-components";
-import { useContextMenu } from "@shared/hooks/use-context-menu";
-import { Icon } from "@shared/ui/icon";
 
 const { Text } = Typography;
 
@@ -29,7 +26,6 @@ const CustomCollapse = styled(Collapse)`
     padding-inline-start: 4px !important;
   }
 `
-
 const TodosPage = observer(() => {
   const methods = useForm<FormFields>({
     defaultValues: { search: "" }
@@ -38,48 +34,6 @@ const TodosPage = observer(() => {
   const onChangeCollapse = (key: string | string[]) => {
     todosStore.onChangeCollapse(Array.isArray(key) ? key : [key])
   };
-
-  const TodoItem = (props: { id: number, description: string }) => {
-    const { id, description } = props
-
-    const menu = useContextMenu()
-
-    return (
-      <Flex 
-        key={id} 
-        align="center" 
-        justify="space-between" 
-        onContextMenu={(event) => menu.open(event)} 
-        style={{ padding: "6px 8px" }}
-      >
-        {menu.isOpen && (
-          <div 
-            ref={menu.ref}
-            style={{ 
-              position: "absolute", 
-              padding: 40, 
-              backgroundColor: "red", 
-              zIndex: 1000000,
-            }} 
-          >
-            <Button icon={<Icon name="reload" />} iconPosition={"end"}>
-              Search
-            </Button>
-          </div>
-        )}
-        <Flex gap={8}>
-          {todosStore.isShowSelected && (
-            <Checkbox checked={todosStore.selected[id]} onClick={(event) => {
-              event.stopPropagation()
-              todosStore.onToggleSelected(id)
-            }} />
-          )}
-          <Text>{description}</Text>
-        </Flex>
-        <IconButton name="actions" onClick={(event) => event.stopPropagation()} />
-      </Flex>
-    )
-  }
 
   const items: CollapseProps["items"] = todosStore.filteredTodos.map((todo) => ({
     key: todo.id,

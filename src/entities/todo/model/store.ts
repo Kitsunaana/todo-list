@@ -10,14 +10,14 @@ const initialSettings: TodoPreviewSettings = {
 
 class TodosStore {
   selected: Record<number, boolean> = {}
-  expanded: Record<number, boolean> = { 2: true, 5: true }
+  expanded: Record<number, boolean> = {}
 
   isShowSelected = false
   settings = initialSettings
   search = ""
 
   constructor() {
-    makeAutoObservable(this)
+    makeAutoObservable(this, {}, { autoBind: true })
 
     reaction(
       () => this.search,
@@ -49,6 +49,14 @@ class TodosStore {
     return this.todos.data.filter(todo => (
       todo.description.toUpperCase().includes(this.search.toUpperCase())
     ))
+  }
+
+  get expandedLength() {
+    return Object.keys(this.expanded).length
+  }
+
+  get selectedLength() {
+    return Object.keys(this.selected).length
   }
 
   onChangePreviewSettings(key: Key, value: Value) {

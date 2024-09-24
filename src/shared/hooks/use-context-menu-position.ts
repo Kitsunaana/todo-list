@@ -21,10 +21,10 @@ export const useContextMenuPosition = (
     if (!y || !ref.current) return
 
     const menuHeight = ref.current?.offsetHeight
-    console.log(y, menuHeight)
     const shouldMoveUp = menuHeight > document.body.clientHeight - y
 
     ref.current.style.top = `${shouldMoveUp ? y - menuHeight : y}px`
+    ref.current.classList.add(shouldMoveUp ? "bottom" : "top")
   }
 
   const updateHorizontalPosition = () => {
@@ -35,6 +35,7 @@ export const useContextMenuPosition = (
     const shouldMoveLeft = menuWidth > document.body.clientWidth - x
 
     ref.current.style.left = `${shouldMoveLeft ? x - menuWidth : x}px`
+    ref.current.classList.add(shouldMoveLeft ? "right" : "left")
   }
 
   const updatePosition = () => {

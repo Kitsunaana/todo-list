@@ -1,20 +1,46 @@
-import { TodoDto } from "@shared/types"
-import * as React from "react";
+import { useContextMenu } from "@shared/hooks/use-context-menu";
+import { Checkbox, Flex } from "antd";
+import { observer } from "mobx-react-lite";
+import { TodoContextMenu } from "./todo-context-menu";
+import { todosStore } from "../model/store";
+import { IconButton } from "@shared/ui/icon-button";
+import { Typography } from "antd"
 
-export const backgroundStyles: Record<TodoDto.Todo["status"], React.CSSProperties> = {
-  working: {
-    backgroundImage: `linear-gradient(315deg, #0000 48%, rgba(194,117,207) 50%, #0000 52%)`,
-    backgroundSize: "8px 8px",
-    borderLeft: "4px solid rgba(194,117,207)"
-  },
-  done: {
-    backgroundImage: `linear-gradient(315deg, #0000 48%, #9ccc65 50%, #0000 52%)`,
-    backgroundSize: "8px 8px",
-    borderLeft: "4px solid #9ccc65"
-  },
-  open: {
-    backgroundImage: `linear-gradient(315deg, #0000 48%, #26c6da 50%, #0000 52%)`,
-    backgroundSize: "8px 8px",
-    borderLeft: "4px solid #26c6da"
-  }
-}
+const { Text } = Typography
+
+export const TodoItem = observer((props: { id: number, description: string }) => {
+  const { id, description } = props
+
+  const menu = useContextMenu()
+
+  return (
+    <Flex
+      key={id} 
+      align="center" 
+      justify="space-between" 
+      onContextMenu={(event) => menu.open(event)} 
+      style={{ padding: "6px 8px" }}
+    >
+      {menu.isOpen && (
+        <TodoContextMenu 
+          id={id} 
+          ref={menu.ref} 
+          close={menu.close} 
+        />
+      )}
+      <Flex gap={8}>
+        {todosStore.isShowSelected && (
+          <Checkbox checked={todosStore.selected[id]} onClick={(event) => {
+            event.stopPropagation()
+            todosStore.onToggleSelected(id)
+          }} />
+        )}
+        <Text>{description}</Text>
+      </Flex>
+      <IconButton name="actions" onClick={(event) => {
+        event.stopPropagation()
+        menu.open(event)
+      }} />
+    </Flex>
+  )
+})

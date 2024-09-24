@@ -7,33 +7,36 @@ import { useState } from "react"
 
 const SelectOptions = observer(() => {
   const ExpandAllTasksButton = (
-    <Button onClick={() => {
-      if (Object.keys(todosStore.expanded).length > 0) todosStore.onCollapseAll()
-      else todosStore.onExpandAll()
-    }}>
-      {Object.keys(todosStore.expanded).length > 0 ? "Свернуть все задачи" : "Развернуть все задачи"}
+    <Button 
+      onClick={() => {
+        if (todosStore.expandedLength > 0) todosStore.onCollapseAll()
+        else todosStore.onExpandAll()
+      }}
+    >
+      {todosStore.expandedLength > 0 
+        ? "Свернуть все задачи" 
+        : "Развернуть все задачи"
+      }
     </Button>
   )
 
   if (todosStore.isShowSelected) {
+    const selectedTodosIsEmpty = todosStore.selectedLength === 0
+
     return (
       <Flex vertical gap={8}>
-        {Object.keys(todosStore.selected).length === 0 && (
-          <Button onClick={() => todosStore.onSelectAll()}>
+        {selectedTodosIsEmpty && (
+          <Button onClick={todosStore.onSelectAll}>
             Выделить все
           </Button>
         )}
-        {Object.keys(todosStore.selected).length > 0 && (
-          <Button onClick={() => todosStore.onRemoveSeleted()}>
+        {!selectedTodosIsEmpty && (
+          <Button onClick={todosStore.onRemoveSeleted}>
             Снять выделенное
           </Button>
         )}
-        {Object.keys(todosStore.selected).length === 0 && (
-          <Button 
-            onClick={() => {
-              todosStore.onToggleShowSeleted()
-            }}
-          >
+        {selectedTodosIsEmpty && (
+          <Button onClick={todosStore.onToggleShowSeleted}>
             Скрыть выделения
           </Button>
         )}
@@ -44,11 +47,7 @@ const SelectOptions = observer(() => {
 
   return (
     <Flex vertical gap={8}>
-      <Button 
-        onClick={() => {
-          todosStore.onToggleShowSeleted()
-        }}
-      >
+      <Button onClick={todosStore.onToggleShowSeleted}>
         Показать выделения
       </Button>
       {ExpandAllTasksButton}

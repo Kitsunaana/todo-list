@@ -1,43 +1,35 @@
 import { toast } from 'react-toastify';
 import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog"
 import { useMutation } from "@tanstack/react-query"
-import { fakeTodosApi } from '@shared/api/fake-todos-api';
 import { CreateTodo } from '@shared/types/todos/types';
 import { queryClient } from '@shared/config/query-client';
 import { TodoDto } from '@shared/types';
+import { todosApi } from '@shared/api/todos-api';
 
 export const useCreateTodo = () => {
-  const { onClose } = useUpsertDialog()
+  const upsertDialog = useUpsertDialog()
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationKey: ["todos"],
-    mutationFn: (data: CreateTodo) => toast.promise(
-      fakeTodosApi.createTodo(data),
+    mutationFn: (data: CreateTodo) => toast.promise<TodoDto.Todo, Error>(
+      todosApi.createTodo(data),
       {
         pending: "Идет создание задачи",
         success: "Задача успешно создана",
-        error: "Произошла ошибка при создании задача"
+        error: { render: ({ data }) => data.message }
       }
     ),
     onSuccess: (data) => {
-      onClose()
+      upsertDialog.onClose()
 
       queryClient.setQueryData(["todos"], (oldData: TodoDto.GetTodosResponse) => {
         return {
           ...oldData,
-          data: oldData.data.concat([
-            {
-              ...data,
-              publishedAt: "",
-              updatedAt: "",
-              createdAt: "",
-              id: Date.now(),
-            }
-          ])
+          data: oldData.data.concat([data])
         }
       })
     },
   })
 
-  return { onCreateTodo: mutate, isLoadingCreate: isPending }
+  return { onCreateTodo: mutate, isLoadingCreate: isPending, isSuccessCreate: isSuccess }
 }

@@ -25,6 +25,11 @@ export interface GetTodosResponse {
   }
 }
 
+export interface GetTodoResponse {
+  data: Todo,
+  meta: {}
+}
+
 export interface EditTodo extends BaseTodoFields {
   id: number
 }

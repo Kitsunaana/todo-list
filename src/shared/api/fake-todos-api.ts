@@ -13,7 +13,7 @@ type ResultFetchType = "resolve" | "reject"
 type MethodsFakeTodosApi = keyof FakeTodoApi
 
 const options: Record<MethodsFakeTodosApi, ResultFetchType> = {
-  createTodo: "resolve",
+  createTodo: "reject",
   editTodo: "resolve",
   getByIdTodo: "resolve",
   getAll: "resolve"

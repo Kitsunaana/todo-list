@@ -5,6 +5,7 @@ import { CreateTodoFormFields } from "../types/types"
 import { DeepPartial, FormProvider, useForm } from "react-hook-form"
 import { UpsertDialog } from "@shared/ui/upsert-dialog"
 import { CreateTodoForm } from "./create-todo-form"
+import { useEffect } from "react"
 
 const defaultValues: DeepPartial<CreateTodoFormFields> = {
   description: "",
@@ -15,9 +16,11 @@ const defaultValues: DeepPartial<CreateTodoFormFields> = {
 export const CreateTodoDialog = observer(() => {
   const { isOpenCreate } = useUpsertDialog()
 
-  const { onCreateTodo, isLoadingCreate } = useCreateTodo()
+  const { onCreateTodo, isLoadingCreate, isSuccessCreate } = useCreateTodo()
 
   const methods = useForm<CreateTodoFormFields>({ defaultValues })
+
+  useEffect(() => { methods.reset() }, [isSuccessCreate, methods])
   
   return (
     <FormProvider {...methods}>

@@ -1,36 +1,44 @@
 import { UpsertDialog } from "@shared/ui/upsert-dialog"
 import { FormProvider, useForm } from "react-hook-form"
-import { CreateTodoFormFields } from "../types/types"
+import { EditTodoFormFields } from "../types/types"
 import { useGetTodo } from "@entities/todo"
 import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog"
 import { useEditTodo } from "../queries/use-edit-todo"
 import { observer } from "mobx-react-lite"
-import { useEffect } from "react"
 import { EditTodoForm } from "./edit-todo-form"
+import { useDialogSetValues } from "@shared/context/use-dialog-set-values"
+import { useDialogClose } from "@shared/context/use-dialog-close"
+
+const defaultValues: EditTodoFormFields = {
+  description: "",
+  name: "",
+  status: "open"
+}
 
 export const EditTodoDialog = observer(() => {
-  const { onEditTodo } = useEditTodo()
-  const { isOpenEdit, id } = useUpsertDialog()
+  const { isOpenEdit, id, onClose } = useUpsertDialog()
 
-  const { todo, isLoadingGet } = useGetTodo(id as number)
+  const { isLoadingEdit, isSuccessEdit, onEditTodo } = useEditTodo()
+  const { todo, isLoadingGet, isErrorGet } = useGetTodo(id as number)
 
-  const methods = useForm<CreateTodoFormFields>({
-    defaultValues: {
-      description: "",
-      name: "",
-      status: "open"
-    }
+  const methods = useForm<EditTodoFormFields>({ defaultValues })
+
+  useDialogClose({ should: isErrorGet || isSuccessEdit, close: onClose })
+
+  useDialogSetValues<EditTodoFormFields>({
+    defaultValues,
+    data: todo,
+    should: isOpenEdit,
+    reset: methods.reset
   })
 
-  useEffect(() => { methods.reset(todo) }, [todo, methods])
-  
   return (
     <FormProvider {...methods}>
       <UpsertDialog
         isOpen={isOpenEdit}
-        isLoading={isLoadingGet}
+        isLoading={isLoadingGet || isLoadingEdit}
         onSubmit={onEditTodo}
-        title={`Редактирование задача`}
+        title={`Редактирование задачи ${todo?.name ?? ""}`}
         content={<EditTodoForm isLoading={isLoadingGet} />}
       />
     </FormProvider>

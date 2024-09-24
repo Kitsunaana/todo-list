@@ -44,7 +44,6 @@ export const UpsertDialog = observer((props: UpsertDialogProps) => {
   const handleSubmit = () => {
     methods.handleSubmit((data) => {
       onSubmit(data)
-      methods.reset()
     })()
   }
 

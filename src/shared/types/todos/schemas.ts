@@ -25,3 +25,8 @@ export const todosSchema = z.object({
     pagination: paginationSchema
   })
 })
+
+export const todoSchemaResponse = z.object({
+  data: todoSchema,
+  meta: z.object({})
+})

@@ -1,29 +1,35 @@
 import { makeAutoObservable } from "mobx";
 
 export interface UpsertDialogMethods {
-  onOpen: () => void;
+  onOpen: (number?: number) => void;
   onClose: () => void;
-  onToggle: () => void;
-  isOpen: boolean
+  id?: number
+  isOpenEdit: boolean
+  isOpenCreate: boolean
 }
 
 export class DialogStore implements UpsertDialogMethods {
-  isOpen = false
+  isOpenCreate = false
+  isOpenEdit = false
+  id: number | undefined = undefined
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true })
   }
 
   onClose() {
-    this.isOpen = false
+    this.isOpenCreate = false
+    this.isOpenEdit = false
+    this.id = undefined
   };
 
-  onOpen() {
-    this.isOpen = true
-  };
-
-  onToggle() {
-    this.isOpen = !this.isOpen
+  onOpen(id?: number) {
+    if (id) {
+      this.id = id
+      this.isOpenEdit = true
+    } else {
+      this.isOpenCreate = true
+    }
   };
 }
 

@@ -1,4 +1,5 @@
 export { todosStore } from "./model/store"
 export { TodoItem } from "./ui/todo-item"
 export { backgroundStyles } from "./ui/styles"
+export { useGetTodo } from "./queries/use-get-todo"
 export * as Types from "./model/types"

@@ -8,10 +8,11 @@ const { Text } = Typography
 interface ContextMenuPopupProps {
   id: number
   close: () => void
+  onEdit: (id: number) => void
 }
 
 export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>((props, ref) => {
-  const { id, close } = props
+  const { id, close, onEdit } = props
 
   return (
     <ContextMenuPopup
@@ -25,7 +26,8 @@ export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>
         <ContextMenuButton 
           iconName="edit" 
           text="Редактировать" 
-          iconColor="#2196f3" 
+          iconColor="#2196f3"
+          onClick={() => onEdit(id)}
         />
       </Flex>
       <Divider style={{ margin: 0 }} />

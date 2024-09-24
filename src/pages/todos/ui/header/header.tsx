@@ -77,7 +77,7 @@ export const Header = observer(() => {
         name="add"
         fontSize={20}
         color="#66bb6a"
-        onClick={onOpen}
+        onClick={() => onOpen()}
       />
 
       <IconButton

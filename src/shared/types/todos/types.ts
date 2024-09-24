@@ -1,11 +1,14 @@
-export interface Todo {
+export interface BaseTodoFields {
+  status: "done" | "working" | "open"
+  description: string
+  name: string | null
+}
+
+export interface Todo extends BaseTodoFields {
   id: number
   createdAt: string
   updatedAt: string
-  name: string | null
   publishedAt: string
-  description: string
-  status: "done" | "working" | "open"
 }
 
 export interface Pagination {
@@ -20,4 +23,11 @@ export interface GetTodosResponse {
   meta: {
     pagination: Pagination
   }
+}
+
+export interface EditTodo extends BaseTodoFields {
+  id: number
+}
+
+export interface CreateTodo extends BaseTodoFields {
 }

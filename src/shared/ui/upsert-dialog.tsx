@@ -2,7 +2,7 @@ import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 import { Modal, Typography } from "antd";
 import { observer } from "mobx-react-lite"
 import { ReactNode } from "react"
-import { useForm, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import styled from "styled-components"
 
 const { Text } = Typography;
@@ -29,38 +29,44 @@ const ModalHeader = styled("div")`
 
 interface UpsertDialogProps {
   content: ReactNode
-  onCreate: (data) => void
+  onSubmit: (data) => void
   isLoading: boolean
+  isOpen: boolean
+  title: string
 }
 
 export const UpsertDialog = observer((props: UpsertDialogProps) => {
-  const { content, onCreate, isLoading } = props
+  const { content, onSubmit, isLoading, title, isOpen } = props
 
-  const { isOpen, onClose } = useUpsertDialog()
+  const { onClose } = useUpsertDialog()
   const methods = useFormContext()
 
-  const onSubmit = () => {
-    methods.handleSubmit(onCreate)()
+  const handleSubmit = () => {
+    methods.handleSubmit((data) => {
+      onSubmit(data)
+      methods.reset()
+    })()
+  }
+
+  const handleCancel = () => {
+    methods.reset()
+    onClose()
   }
 
   return (
     <CustomModal 
       open={isOpen} 
-      onOk={onSubmit} 
-      onCancel={() => {
-        onClose()
-
-        methods.reset()
-      }} 
+      onOk={handleSubmit} 
+      onCancel={handleCancel} 
       maskClosable={false}
       closable={false}
-      cancelText={"ОТМЕНА"}
-      okText={"СОХРАНИТЬ"}
+      cancelText="ОТМЕНА"
+      okText="СОХРАНИТЬ"
       okButtonProps={{ disabled: isLoading }}
       cancelButtonProps={{ disabled: isLoading }}
     >
       <ModalHeader>
-        <Text>Создание задачи</Text>
+        <Text>{title}</Text>
       </ModalHeader>
 
       {content}

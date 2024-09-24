@@ -1,4 +1,4 @@
-import {Checkbox, Collapse, CollapseProps, Flex, Input, Select, Typography} from "antd";
+import {Button, Checkbox, Collapse, CollapseProps, Flex, Input, Select, Typography} from "antd";
 import {observer} from "mobx-react-lite";
 import {FormProvider, useForm} from "react-hook-form";
 import {Footer} from "./ui/footer/footer";
@@ -8,6 +8,8 @@ import {Table} from "@shared/ui/table";
 import { UpsertDialog } from "@shared/ui/upsert-dialog";
 import { IconButton } from "@shared/ui/icon-button";
 import styled from "styled-components";
+import { useContextMenu } from "@shared/hooks/use-context-menu";
+import { Icon } from "@shared/ui/icon";
 
 const { Text } = Typography;
 
@@ -19,7 +21,8 @@ const CustomCollapse = styled(Collapse)`
   && .ant-collapse-header {
     display: flex;
     align-items: center;
-    padding: 6px 8px;
+    position: unset;
+    padding: 0px 8px 0px 0px;
   }
 
   && .ant-collapse-expand-icon {
@@ -32,27 +35,55 @@ const TodosPage = observer(() => {
     defaultValues: { search: "" }
   })
 
-  const onChange = (key: string | string[]) => {
-    console.log(key);
+  const onChangeCollapse = (key: string | string[]) => {
     todosStore.onChangeCollapse(Array.isArray(key) ? key : [key])
   };
 
-  const items: CollapseProps["items"] = todosStore.filteredTodos.map((todo) => ({
-    key: todo.id,
-    label: (
-      <Flex key={todo.id} align="center" justify="space-between">
+  const TodoItem = (props: { id: number, description: string }) => {
+    const { id, description } = props
+
+    const menu = useContextMenu()
+
+    return (
+      <Flex 
+        key={id} 
+        align="center" 
+        justify="space-between" 
+        onContextMenu={(event) => menu.open(event)} 
+        style={{ padding: "6px 8px" }}
+      >
+        {menu.isOpen && (
+          <div 
+            ref={menu.ref}
+            style={{ 
+              position: "absolute", 
+              padding: 40, 
+              backgroundColor: "red", 
+              zIndex: 1000000,
+            }} 
+          >
+            <Button icon={<Icon name="reload" />} iconPosition={"end"}>
+              Search
+            </Button>
+          </div>
+        )}
         <Flex gap={8}>
           {todosStore.isShowSelected && (
-            <Checkbox checked={todosStore.selected[todo.id]} onClick={(event) => {
+            <Checkbox checked={todosStore.selected[id]} onClick={(event) => {
               event.stopPropagation()
-              todosStore.onToggleSelected(todo.id)
+              todosStore.onToggleSelected(id)
             }} />
           )}
-          <Text>{todo.description}</Text>
+          <Text>{description}</Text>
         </Flex>
         <IconButton name="actions" onClick={(event) => event.stopPropagation()} />
       </Flex>
-    ),
+    )
+  }
+
+  const items: CollapseProps["items"] = todosStore.filteredTodos.map((todo) => ({
+    key: todo.id,
+    label: <TodoItem key={todo.id} description={todo.description} id={todo.id} />,
     children: [<Text key={todo.id}>{todo.publishedAt}</Text>],
     style: {
       ...backgroundStyles[todo.status],
@@ -83,7 +114,7 @@ const TodosPage = observer(() => {
             defaultActiveKey={Object.keys(todosStore.expanded)}
             activeKey={Object.keys(todosStore.expanded)}
             expandIconPosition="end"
-            onChange={onChange}
+            onChange={onChangeCollapse}
             items={items}
             style={{
               overflow: "hidden auto",

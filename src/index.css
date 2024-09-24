@@ -4,10 +4,31 @@
   box-sizing: border-box;
 }
 
+body {
+  height: 100vh;
+}
+
 #root {
   position: absolute;
   right: 8px;
   left: 8px;
   top: 8px;
   bottom: 8px;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dbd6d6;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b4b0b0;
 }

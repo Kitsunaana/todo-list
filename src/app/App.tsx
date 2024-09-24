@@ -4,8 +4,8 @@ import { UpsertDialogProvider } from "@shared/context/upsert-dialog-context"
 
 export const App = () => {
   return (
-    <UpsertDialogProvider>
-      <TodosPage />
-    </UpsertDialogProvider>
+      <UpsertDialogProvider>
+        <TodosPage />
+      </UpsertDialogProvider>
   )
 }

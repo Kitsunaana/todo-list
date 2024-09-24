@@ -2,6 +2,7 @@ import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 import { Modal, Typography } from "antd";
 import { observer } from "mobx-react-lite"
 import { ReactNode } from "react"
+import { useForm, useFormContext } from "react-hook-form";
 import styled from "styled-components"
 
 const { Text } = Typography;
@@ -28,22 +29,35 @@ const ModalHeader = styled("div")`
 
 interface UpsertDialogProps {
   content: ReactNode
+  onCreate: (data) => void
+  isLoading: boolean
 }
 
 export const UpsertDialog = observer((props: UpsertDialogProps) => {
-  const { content } = props
+  const { content, onCreate, isLoading } = props
 
   const { isOpen, onClose } = useUpsertDialog()
+  const methods = useFormContext()
+
+  const onSubmit = () => {
+    methods.handleSubmit(onCreate)()
+  }
 
   return (
     <CustomModal 
       open={isOpen} 
-      onOk={onClose} 
-      onCancel={onClose} 
+      onOk={onSubmit} 
+      onCancel={() => {
+        onClose()
+
+        methods.reset()
+      }} 
       maskClosable={false}
       closable={false}
       cancelText={"ОТМЕНА"}
       okText={"СОХРАНИТЬ"}
+      okButtonProps={{ disabled: isLoading }}
+      cancelButtonProps={{ disabled: isLoading }}
     >
       <ModalHeader>
         <Text>Создание задачи</Text>

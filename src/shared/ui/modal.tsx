@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {ReactNode} from "react";
-import {useEvent} from "../hooks/use-event.ts";
-import {CrossLightIcon} from "./close-icon.tsx";
+import {useEvent} from "../hooks/use-event";
+import {CrossLightIcon} from "./close-icon";
 import {createPortal} from "react-dom";
 
 const ModalWrapper = styled.div`
@@ -81,7 +81,9 @@ interface ModalProps {
 export const Modal = (props: ModalProps) => {
   const { onClose, isOpen, children } = props
 
-  useEvent("keydown", (event) => { if (event.key === "Escape") onClose() })
+  useEvent("keydown", (event) => { 
+    if (event.key === "Escape") onClose()
+  })
 
   if (!isOpen) return null
 
@@ -97,7 +99,7 @@ export const Modal = (props: ModalProps) => {
     </ModalWrapper>
   )
 
-  return createPortal(modal, document.getElementById("modals"))
+  return createPortal(modal, document.getElementById("modals") as HTMLElement)
 }
 
 Modal.Header = function ({ children }: {children: ReactNode}) {

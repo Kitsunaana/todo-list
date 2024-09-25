@@ -6,6 +6,7 @@ import { todosStore } from "../model/store";
 import { IconButton } from "@shared/ui/icon-button";
 import { Typography } from "antd"
 import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
+import { Icon } from "@shared/ui/icon";
 
 const { Text } = Typography
 
@@ -45,6 +46,9 @@ export const TodoItem = observer((props: TodoItemProps) => {
             event.stopPropagation()
             todosStore.onToggleSelected(id)
           }} />
+        )}
+        {todosStore.favorites.includes(id) && (
+          <Icon name="addFavorite" color="#e91e63" />
         )}
         <Text>{description}</Text>
       </Flex>

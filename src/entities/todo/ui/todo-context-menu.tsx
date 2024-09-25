@@ -2,6 +2,7 @@ import { ContextMenuPopup } from "@shared/ui/context-menu"
 import { ContextMenuButton } from "@shared/ui/context-menu-button"
 import { Divider, Flex, Typography } from "antd"
 import { forwardRef } from "react"
+import { todosStore } from "../model/store"
 
 const { Text } = Typography
 
@@ -42,8 +43,9 @@ export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>
         />
         <ContextMenuButton
           iconName="addFavorite"
-          text="Добавить в избранное"
+          text={todosStore.favorites.includes(id) ? "Удалить из избранного" : "Добавить в избранное"}
           iconColor="#ff4081"
+          onClick={() => todosStore.onToggleFavorite(id)}
         />
         <ContextMenuButton
           iconName="doDone"

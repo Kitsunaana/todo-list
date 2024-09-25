@@ -3,30 +3,28 @@ import {Button, Flex, Input, Popover} from "antd";
 import {Icon} from "@shared/ui/icon";
 import {IconButton} from "@shared/ui/icon-button";
 import {todosStore} from "@entities/todo";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {TodoPreviewSettings} from "./settings";
-import {FormFields} from "../../todos-page";
 import { observer } from "mobx-react-lite";
 import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
+import { FilterPopup } from "./filter";
+import { useEvent } from "@shared/hooks/use-event";
+import { FilterFormFields } from "@pages/todos/todos-page";
 
 export const Header = observer(() => {
   const [isFocused, setIsFocused] = useState(false);
-  const methods = useForm<FormFields>()
+  const methods = useForm<FilterFormFields>()
   const { onOpen } = useUpsertDialog()
 
-  useEffect(() => {
-    const cbEvent = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && isFocused) {
-        methods.handleSubmit((data) => {
-          todosStore.changeSearch(data.search)
-        })()
-      }
+  useEvent("keydown", (event) => {
+    if (event.key === "Enter" && isFocused) {
+      methods.handleSubmit((data) => {
+        // todosStore.changeSearch(data.search)
+        // todosStore.changeFilter(data.search)
+        console.log(data);
+      })()
     }
-
-    window.addEventListener("keydown", cbEvent)
-
-    return () => window.removeEventListener("keydown", cbEvent)
-  }, [isFocused, methods]);
+  })
 
   return (
     <Flex style={{marginBottom: 8}}>
@@ -44,7 +42,16 @@ export const Header = observer(() => {
         )}
       />
 
-      {/* <IconButton name="" /> */}
+      <Popover
+        content={<FilterPopup />}
+        trigger="click"
+        placement="bottomRight"
+      >
+        <Button
+          type="text"
+          icon={<Icon name="filter" color="#ffa726"/>}
+        />
+      </Popover>
 
       <Popover
         content={<TodoPreviewSettings />}
@@ -53,14 +60,13 @@ export const Header = observer(() => {
       >
         <Button
           type="text"
-          icon={<Icon name="settings" fontSize={20} color="#616161"/>}
+          icon={<Icon name="settings" color="#616161"/>}
         />
       </Popover>
 
       {todosStore.selectedLength > 0 && (
         <IconButton
           name="allDone"
-          fontSize={20}
           color="#2196f3"
         />
       )}
@@ -68,21 +74,18 @@ export const Header = observer(() => {
       {todosStore.selectedLength > 0 && (
         <IconButton
           name="remove"
-          fontSize={20}
           color="#e53935"
         />
       )}
 
       <IconButton
         name="add"
-        fontSize={20}
         color="#66bb6a"
         onClick={() => onOpen()}
       />
 
       <IconButton
         name="reload"
-        fontSize={20}
         color="#fb8c00"
         onClick={() => todosStore.todosResult.refetch()}
       />

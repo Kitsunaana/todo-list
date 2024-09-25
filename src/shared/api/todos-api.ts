@@ -4,8 +4,8 @@ import { TodoSchemas, TodoDto } from "../types"
 const URL = "https://cms.laurence.host/api/tasks"
 
 export const todosApi = {
-  getAll: async (): Promise<TodoDto.GetTodosResponse> => {
-    const response = await fetch(`${URL}?sort=createdAt`, {
+  getAll: async (url?: string): Promise<TodoDto.GetTodosResponse> => {
+    const response = await fetch(url ?? `${URL}?sort=createdAt`, {
       method: "GET",
       mode: "cors",
       credentials: "include",
@@ -68,8 +68,6 @@ export const todosApi = {
   },
 
   editTodo: async (payload: TodoDto.EditTodo) => {
-    console.log(payload)
-
     const response = await fetch(`${URL}/${payload.id}`, {
       method: "PUT",
       body: JSON.stringify({ data: payload }),

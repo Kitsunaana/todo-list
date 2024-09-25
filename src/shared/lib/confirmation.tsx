@@ -1,4 +1,4 @@
-import {createStrictContext, useStrictContext} from "./react.tsx";
+import {createStrictContext, useStrictContext} from "./react";
 
 export type ConfirmationParams = {
   title?: string

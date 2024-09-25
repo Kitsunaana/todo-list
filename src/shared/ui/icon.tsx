@@ -9,7 +9,7 @@ const icons = {
   edit: "edit",
   addFavorite: "favorite",
   doDone: "check",
-
+  filter: "filter_alt"
 } as const
 
 export type IconNames = keyof typeof icons

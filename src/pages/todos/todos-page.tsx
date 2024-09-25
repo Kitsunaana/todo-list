@@ -10,8 +10,9 @@ import { CreateTodoDialog, EditTodoDialog, useRemoveTodo } from "@features/todo"
 
 const { Text } = Typography;
 
-export interface SearchFormFields {
+export interface FilterFormFields {
   search: string
+  filter: "favorite" | "open" | "working" | "done" | "all"
 }
 
 const CustomCollapse = styled(Collapse)`
@@ -30,13 +31,15 @@ const CustomCollapse = styled(Collapse)`
 const TodosPage = observer(() => {
   const onRemove = useRemoveTodo()
 
-  const methods = useForm<SearchFormFields>({
-    defaultValues: { search: "" }
+  const methods = useForm<FilterFormFields>({
+    defaultValues: { search: "", filter: "all" }
   })
 
   const onChangeCollapse = (key: string | string[]) => {
     todosStore.onChangeCollapse(Array.isArray(key) ? key : [key])
   };
+
+  if (todosStore.todosResult.isLoading) return null
 
   const items: CollapseProps["items"] = todosStore.filteredTodos.map((todo) => ({
     key: todo.id,

@@ -1,6 +1,7 @@
 import { Flex, Input, Select, Typography } from "antd"
 import { Controller, useFormContext } from "react-hook-form"
 import { CreateTodoFormFields } from "../types/types";
+import { statusOptions } from "../const";
 
 const { Text } = Typography;
 const { TextArea } = Input
@@ -61,24 +62,11 @@ export const EditTodoForm = (props: EditTodoFormProps) => {
           <Select
             {...field}
             showSearch
-            placeholder="Select a person"
+            placeholder="Статус"
             optionFilterProp="label"
             defaultValue={"open"}
             disabled={isLoading}
-            options={[
-              {
-                value: 'open',
-                label: 'Создано',
-              },
-              {
-                value: 'working',
-                label: 'В работе',
-              },
-              {
-                value: 'done',
-                label: 'Выполнено',
-              },
-            ]}
+            options={statusOptions}
           />
         )}
       />

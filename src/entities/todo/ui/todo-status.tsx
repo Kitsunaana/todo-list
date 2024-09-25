@@ -1,8 +1,8 @@
 import { TodoDto } from "@shared/types"
 import { Mark } from "@shared/ui/mark"
 import { todosStore } from "../model/store"
-import { labels } from "@shared/const/filters"
 import { Typography } from "antd"
+import { statusOptions } from "../model/const"
 
 const { Text } = Typography
 
@@ -28,7 +28,7 @@ export const TodoStatus = (props: TodoStatusProps) => {
       }}
     >
       <Text style={{ color: "#fff" }}>
-        {labels[status]}
+        {statusOptions.find(option => option.value === status)?.label}
       </Text>
     </Mark>
   )

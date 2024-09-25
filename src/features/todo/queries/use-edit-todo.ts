@@ -8,16 +8,19 @@ import { todosStore } from '@entities/todo';
 
 export const useEditTodo = () => {
   const { mutate, isPending, isSuccess } = useMutation({
-    mutationKey: ["todos"],
+    mutationKey: ["todo"],
     mutationFn: (data: EditTodo) => toast.promise<TodoDto.EditTodo, Error>(todosApi.editTodo(data), {
       success: "Задача успешно обновлена",
       error: { render({ data }) { return data.message } }
     }),
     onSuccess(data) {
-      queryClient.setQueryData(["todos", todosStore.url], (oldData: TodoDto.GetTodosResponse) => {
+      queryClient.setQueryData(["todos", todosStore.filter], (oldData: { pages: TodoDto.GetTodosResponse[] }) => {
         return {
           ...oldData,
-          data: oldData.data.map(todo => todo.id === data.id ? data : todo)
+          pages: oldData.pages.map(page => ({
+            ...page,
+            data: page.data.map(todo => todo.id === data.id ? data : todo)
+          }))
         }
       })
     },

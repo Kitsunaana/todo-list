@@ -20,15 +20,10 @@ export const useCreateTodo = () => {
         error: { render: ({ data }) => data.message }
       }
     ),
-    onSuccess: (data) => {
+    onSuccess: () => {
       upsertDialog.onClose()
 
-      queryClient.setQueryData(["todos", todosStore.url], (oldData: TodoDto.GetTodosResponse) => {
-        return {
-          ...oldData,
-          data: oldData.data.concat([data])
-        }
-      })
+      queryClient.invalidateQueries({ queryKey: ["todos", todosStore.filter] })
     },
   })
 

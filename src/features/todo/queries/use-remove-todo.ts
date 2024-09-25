@@ -17,10 +17,13 @@ export const useRemoveTodo = () => {
       success: "Задача успешно удалена"
     }),
     onSuccess: (todoId) => {
-      queryClient.setQueryData(["todos", todosStore.url], (oldData: TodoDto.GetTodosResponse) => {
+      queryClient.setQueryData(["todos", todosStore.filter], (oldData: { pages: TodoDto.GetTodosResponse[] }) => {
         return {
           ...oldData,
-          data: oldData.data.filter(todo => todo.id !== todoId)
+          pages: oldData.pages.map(page => ({
+            ...page,
+            data: page.data.filter(todo => todo.id !== todoId)
+          }))
         }
       })
     }

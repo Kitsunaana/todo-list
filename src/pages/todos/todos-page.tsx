@@ -6,11 +6,11 @@ import {Header} from "./ui/header/header";
 import {todosStore, backgroundStyles, TodoItem} from "@entities/todo";
 import {Table} from "@shared/ui/table";
 import styled from "styled-components";
-import { CreateTodoDialog, EditTodoDialog } from "@features/todo";
+import { CreateTodoDialog, EditTodoDialog, useRemoveTodo } from "@features/todo";
 
 const { Text } = Typography;
 
-export interface FormFields {
+export interface SearchFormFields {
   search: string
 }
 
@@ -28,7 +28,9 @@ const CustomCollapse = styled(Collapse)`
 `
 
 const TodosPage = observer(() => {
-  const methods = useForm<FormFields>({
+  const onRemove = useRemoveTodo()
+
+  const methods = useForm<SearchFormFields>({
     defaultValues: { search: "" }
   })
 
@@ -38,7 +40,14 @@ const TodosPage = observer(() => {
 
   const items: CollapseProps["items"] = todosStore.filteredTodos.map((todo) => ({
     key: todo.id,
-    label: <TodoItem key={todo.id} description={todo.description} id={todo.id} />,
+    label: (
+      <TodoItem
+        key={todo.id}
+        description={todo.description}
+        id={todo.id}
+        onRemove={onRemove}
+      />
+    ),
     children: [<Text key={todo.id}>{todo.publishedAt}</Text>],
     style: {
       ...backgroundStyles[todo.status],

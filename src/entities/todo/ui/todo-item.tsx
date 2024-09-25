@@ -9,29 +9,34 @@ import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 
 const { Text } = Typography
 
-export const TodoItem = observer((props: { id: number, description: string }) => {
-  const { id, description } = props
+interface TodoItemProps {
+  id: number
+  description: string
+  onRemove: (id: number, description: string) => void
+}
+
+export const TodoItem = observer((props: TodoItemProps) => {
+  const { id, description, onRemove } = props
 
   const menu = useContextMenu()
   const upsertDialog = useUpsertDialog()
 
   return (
     <Flex
-      key={id} 
-      align="center" 
-      justify="space-between" 
-      onContextMenu={(event) => menu.open(event)} 
+      key={id}
+      align="center"
+      justify="space-between"
+      onContextMenu={(event) => menu.open(event)}
       style={{ padding: "6px 8px" }}
     >
       {menu.isOpen && (
-        <TodoContextMenu 
-          id={id} 
-          ref={menu.ref} 
+        <TodoContextMenu
+          id={id}
+          description={description}
+          ref={menu.ref}
           close={menu.close}
-          onEdit={(id) => {
-            console.log(id);
-            upsertDialog.onOpen(id)
-          }}
+          onEdit={upsertDialog.onOpen}
+          onRemove={onRemove}
         />
       )}
       <Flex gap={8}>

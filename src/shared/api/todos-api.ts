@@ -85,4 +85,8 @@ export const todosApi = {
 
     return { id, ...attributes } as TodoDto.Todo
   },
+
+  removeTodo: async (todoId: number) => {
+
+  }
 }

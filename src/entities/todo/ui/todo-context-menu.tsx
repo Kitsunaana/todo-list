@@ -9,10 +9,12 @@ interface ContextMenuPopupProps {
   id: number
   close: () => void
   onEdit: (id: number) => void
+  onRemove: (id: number, description: string) => void
+  description: string
 }
 
 export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>((props, ref) => {
-  const { id, close, onEdit } = props
+  const { id, close, onEdit, onRemove, description } = props
 
   return (
     <ContextMenuPopup
@@ -23,29 +25,30 @@ export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>
       }}
     >
       <Flex style={{ padding: "4px 8px" }}>
-        <ContextMenuButton 
-          iconName="edit" 
-          text="Редактировать" 
+        <ContextMenuButton
+          iconName="edit"
+          text="Редактировать"
           iconColor="#2196f3"
           onClick={() => onEdit(id)}
         />
       </Flex>
       <Divider style={{ margin: 0 }} />
       <Flex vertical gap={8} style={{ padding: "4px 8px" }}>
-        <ContextMenuButton 
-          iconName="remove" 
-          text="Удалить" 
-          iconColor="#f44336" 
+        <ContextMenuButton
+          iconName="remove"
+          text="Удалить"
+          iconColor="#f44336"
+          onClick={() => onRemove(id, description)}
         />
-        <ContextMenuButton 
-          iconName="addFavorite" 
-          text="Добавить в избранное" 
-          iconColor="#ff4081" 
+        <ContextMenuButton
+          iconName="addFavorite"
+          text="Добавить в избранное"
+          iconColor="#ff4081"
         />
-        <ContextMenuButton 
-          iconName="doDone" 
-          text="Выполнить" 
-          iconColor="#4caf50" 
+        <ContextMenuButton
+          iconName="doDone"
+          text="Выполнить"
+          iconColor="#4caf50"
         />
       </Flex>
       <Divider style={{ margin: 0 }} />

@@ -16,8 +16,10 @@ export const useEvent = <Key extends keyof HTMLElementEventMap>(
       handler(event as HTMLElementEventMap[Key])
     }
 
-    node.addEventListener(name, eventListener)
+    if ("addEventListener" in node) {
+      node.addEventListener(name, eventListener)
+    }
 
-    return () => node.removeEventListener(name, eventListener)
+    return () => "removeEventListener" in node ? node.removeEventListener(name, eventListener) : {}
   })
 }

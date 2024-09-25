@@ -2,6 +2,7 @@ import { makeAutoObservable, reaction } from "mobx";
 import { Key, TodoPreviewSettings, Value } from "./types";
 import { TodoDto } from "@shared/types";
 import { LOCAL_STORAGE_FAVORITES_KEY, LOCAL_STORAGE_KEYS, LOCAL_STORAGE_SETTINGS_KEY } from "./const";
+import queryString from "query-string";
 
 const initialSettings: TodoPreviewSettings = {
   isShowHatch: false,
@@ -11,11 +12,11 @@ const initialSettings: TodoPreviewSettings = {
 class TodosStore {
   selected: Record<number, boolean> = {}
   expanded: Record<number, boolean> = {}
-  favorites: number[] = [0]
+  favorites: number[] = []
   todos: TodoDto.Todo[] = []
 
-  search = ""
   filter = "all"
+  search = ""
   queryParams = ""
 
   isShowSelected = false
@@ -30,6 +31,10 @@ class TodosStore {
     )
 
     this.setInitialData()
+  }
+
+  setTodos(todos: TodoDto.Todo[]) {
+    this.todos = todos
   }
 
   setInitialData() {
@@ -51,27 +56,32 @@ class TodosStore {
     })
   }
 
-  setTodos(todos: TodoDto.Todo[]) {
-    this.todos = todos
-  }
-
-  onChangeFilter(filter: TodoDto.Filters) {
+  onChangeFilter(filter: TodoDto.Filters = "all", saveToPath: boolean = true) {
     this.filter = filter
-    let result = ""
 
     if (filter === "favorite") {
-      result = this.favorites.map((favorite) => `filters[id]=${favorite}`).join("&")
+      this.queryParams = this.favorites.map((favorite) => `filters[id]=${favorite}`).join("&")
     } else if (filter !== "all") {
-      result = `filters[status]=${filter}`
+      this.queryParams = `filters[status]=${filter}`
+    } else {
+      this.queryParams = ""
     }
 
-    this.queryParams = `${result}`
+    if (saveToPath) {
+      const params = queryString.stringify({ ...queryString.parseUrl(window.location.href).query, filter });
+
+      window.history.pushState({}, "", `${window.location.href.split("?")[0]}?${params}`)
+    }
   }
 
-  changeSearch(value: string) {
-    if (this.search === value) return
-
+  changeSearch(value: string, saveToPath: boolean = true) {
     this.search = value.trim()
+
+    if (saveToPath) {
+      const params = queryString.stringify({ ...queryString.parseUrl(window.location.href).query, search: value });
+
+      window.history.pushState({}, "", `${window.location.href.split("?")[0]}?${params}`)
+    }
   }
 
   onToggleFavorite(id: number) {

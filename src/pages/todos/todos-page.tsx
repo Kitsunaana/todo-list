@@ -10,8 +10,11 @@ import { CreateTodoDialog, EditTodoDialog, useRemoveTodo } from "@features/todo"
 import { Loader } from "@shared/ui/loader";
 import { Mark } from "@shared/ui/mark";
 import { formattedDate } from "@shared/lib/date";
-import { TodoDto } from "@shared/types";
 import { useEditTodo } from "@features/todo/queries/use-edit-todo";
+import { useEffect } from "react";
+import { TodoDto } from "@shared/types";
+import { filters } from "./ui/header/filter";
+import { useSearchParams } from "react-router-dom";
 
 const { Text } = Typography;
 
@@ -37,17 +40,29 @@ const CustomCollapse = styled(Collapse)`
 `
 
 const TodosPage = observer(() => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  
   const onRemove = useRemoveTodo()
   const methods = useForm<FilterFormFields>({
     defaultValues: { search: "" }
   })
 
-  const onChangeCollapse = (key: string | string[]) => {
-    todosStore.onChangeCollapse(Array.isArray(key) ? key : [key])
-  };
-
   const { isError, isLoading, lastElementRef, refetch } = useInfiniteQueryTodos()
   const { onEditTodo } = useEditTodo()
+
+
+  useEffect(() => {
+    const search = searchParams.get("search")
+    const filter = searchParams.get("filter")
+
+    const filterIsValid = (filter: unknown): filter is TodoDto.Filters => (filters as unknown[]).includes(filter)
+    const searchIsValid = (search: unknown): search is string => typeof search === "string"
+
+    methods.setValue("search", search ?? "")
+
+    if (searchIsValid(search)) todosStore.changeSearch(search, false)
+    if (filterIsValid(filter)) todosStore.onChangeFilter(filter ?? "all", false)
+  }, [searchParams])
 
   const items: CollapseProps["items"] = todosStore
     .filteredTodos
@@ -101,6 +116,10 @@ const TodosPage = observer(() => {
       return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
     }
   }
+
+  const onChangeCollapse = (key: string | string[]) => {
+    todosStore.onChangeCollapse(Array.isArray(key) ? key : [key])
+  };
 
   return (
     <>

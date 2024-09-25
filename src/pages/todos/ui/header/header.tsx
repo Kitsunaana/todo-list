@@ -1,4 +1,4 @@
-import {Controller, useForm} from "react-hook-form";
+import {Controller, useForm, useFormContext} from "react-hook-form";
 import {Button, Flex, Input, Popover} from "antd";
 import {Icon} from "@shared/ui/icon";
 import {IconButton} from "@shared/ui/icon-button";
@@ -11,13 +11,15 @@ import { FilterPopup } from "./filter";
 import { useEvent } from "@shared/hooks/use-event";
 import { FilterFormFields } from "@pages/todos/todos-page";
 import { useEditTodos, useRemoveTodos } from "@features/todo";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const Header = observer(() => {
   const onRemove = useRemoveTodos()
   const onChangeStatus = useEditTodos()
+  const navigate = useNavigate()
 
   const [isFocused, setIsFocused] = useState(false);
-  const methods = useForm<FilterFormFields>()
+  const methods = useFormContext<FilterFormFields>()
   const { onOpen } = useUpsertDialog()
 
   const handleRemoveTodos = () => {
@@ -39,7 +41,7 @@ export const Header = observer(() => {
       <Controller
         name="search"
         control={methods.control}
-        render={({field}) => (
+        render={({ field }) => (
           <Input
             {...field}
             placeholder="Поиск"
@@ -92,6 +94,16 @@ export const Header = observer(() => {
         name="add"
         color="#66bb6a"
         onClick={() => onOpen()}
+      />
+
+      <IconButton 
+        name="undo"
+        onClick={() => navigate(-1)}
+      />
+
+      <IconButton 
+        name="redo"
+        onClick={() => navigate(+1)}
       />
     </Flex>
   )

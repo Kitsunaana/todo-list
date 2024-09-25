@@ -4,8 +4,8 @@ import { TodoSchemas, TodoDto } from "../types"
 const URL = "https://cms.laurence.host/api/tasks"
 
 export const todosApi = {
-  getAll: async (url?: string): Promise<TodoDto.GetTodosResponse> => {
-    const response = await fetch(url ?? `${URL}?sort=createdAt`, {
+  getAll: async (queryParams?: string): Promise<TodoDto.GetTodosResponse> => {
+    const response = await fetch(queryParams ? `${URL}?${queryParams}` : `${URL}?sort=createdAt`, {
       method: "GET",
       mode: "cors",
       credentials: "include",

@@ -1,4 +1,4 @@
-import {Collapse, CollapseProps, Typography} from "antd";
+import {Button, Collapse, CollapseProps, Empty, Result, Typography} from "antd";
 import {observer} from "mobx-react-lite";
 import {FormProvider, useForm} from "react-hook-form";
 import {Footer} from "./ui/footer/footer";
@@ -7,15 +7,21 @@ import {todosStore, backgroundStyles, TodoItem} from "@entities/todo";
 import {Table} from "@shared/ui/table";
 import styled from "styled-components";
 import { CreateTodoDialog, EditTodoDialog, useRemoveTodo } from "@features/todo";
+import { Loader } from "@shared/ui/loader";
+import { Mark } from "@shared/ui/mark";
+import { formattedDate } from "@shared/lib/date";
 
 const { Text } = Typography;
 
 export interface FilterFormFields {
   search: string
-  filter: "favorite" | "open" | "working" | "done" | "all"
 }
 
 const CustomCollapse = styled(Collapse)`
+  overflow: hidden auto;
+  display: flex;
+  flex-direction: column;
+
   && .ant-collapse-header {
     display: flex;
     align-items: center;
@@ -30,35 +36,66 @@ const CustomCollapse = styled(Collapse)`
 
 const TodosPage = observer(() => {
   const onRemove = useRemoveTodo()
-
   const methods = useForm<FilterFormFields>({
-    defaultValues: { search: "", filter: "all" }
+    defaultValues: { search: "" }
   })
 
   const onChangeCollapse = (key: string | string[]) => {
     todosStore.onChangeCollapse(Array.isArray(key) ? key : [key])
   };
 
-  if (todosStore.todosResult.isLoading) return null
+  const { data, isLoading, isError, refetch } = todosStore.todosResult
+  
+  let items: CollapseProps["items"]  = []
 
-  const items: CollapseProps["items"] = todosStore.filteredTodos.map((todo) => ({
-    key: todo.id,
-    label: (
-      <TodoItem
-        key={todo.id}
-        description={todo.description}
-        id={todo.id}
-        onRemove={onRemove}
-      />
-    ),
-    children: [<Text key={todo.id}>{todo.publishedAt}</Text>],
-    style: {
-      ...backgroundStyles[todo.status],
-      ...(!todosStore.settings.isShowHatch ? {} : {
-        backgroundImage: "unset"
-      })
-    },
-  }))
+  if (!isLoading && !isError) {
+    items = todosStore.filteredTodos.map((todo) => ({
+      key: todo.id,
+      label: (
+        <TodoItem
+          key={todo.id}
+          description={todo.description}
+          id={todo.id}
+          onRemove={onRemove}
+        />
+      ),
+      children: [(
+        <Text key={todo.id}>
+          Дата публикации задачи: <Mark>{formattedDate(todo.publishedAt)}</Mark>
+        </Text>
+      )],
+      style: {
+        ...backgroundStyles[todo.status],
+        ...(!todosStore.settings.isShowHatch ? {} : {
+          backgroundImage: "unset"
+        })
+      },
+    }))
+  }
+
+  
+  const renderContent = () => {
+    if (isLoading) return <Loader />
+    if (isError) {
+      return (
+        <Result
+          status="warning"
+          title="Похоже произошла ошибка при загрузке данных"
+          extra={
+            <Button 
+              onClick={() => refetch()} 
+              type="primary" 
+            >
+              Загрузить снова
+            </Button>
+          }
+        />
+      )
+    }
+    if (data?.data.length === 0) {
+      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+    }
+  }
 
   return (
     <>
@@ -68,20 +105,14 @@ const TodosPage = observer(() => {
             <Header />
           </FormProvider>
         )}
-        content={(
-          <CustomCollapse
+        content={items.length === 0 ? (renderContent()) : (
+          (<CustomCollapse
             defaultActiveKey={Object.keys(todosStore.expanded)}
             activeKey={Object.keys(todosStore.expanded)}
             expandIconPosition="end"
             onChange={onChangeCollapse}
             items={items}
-            style={{
-              overflow: "hidden auto",
-              display: "flex",
-              flexFlow: "column",
-              WebkitBoxFlex: 1,
-            }}
-          />
+          />)
         )}
         footer={<Footer />}
       />

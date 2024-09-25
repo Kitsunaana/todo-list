@@ -1,3 +1,4 @@
+import { todosStore } from "@entities/todo";
 import { todosApi } from "@shared/api/todos-api";
 import { queryClient } from "@shared/config/query-client";
 import { useGetConfirmation } from "@shared/lib/confirmation";
@@ -16,7 +17,7 @@ export const useRemoveTodo = () => {
       success: "Задача успешно удалена"
     }),
     onSuccess: (todoId) => {
-      queryClient.setQueryData(["todos"], (oldData: TodoDto.GetTodosResponse): TodoDto.GetTodosResponse => {
+      queryClient.setQueryData(["todos", todosStore.url], (oldData: TodoDto.GetTodosResponse) => {
         return {
           ...oldData,
           data: oldData.data.filter(todo => todo.id !== todoId)

@@ -1,12 +1,40 @@
 import styled from "styled-components";
 import {ReactNode} from "react";
 
-const Overlay = styled("div")`
-    background-color: #ffffff;
-    border-radius: 8px;
-    height: 100%;
-    width: 100%;
-    box-shadow: 0px 4px 5px -2px rgba(0, 0, 0, 0.2), 0px 7px 10px 1px rgba(0, 0, 0, 0.14), 0px 2px 16px 1px rgba(0, 0, 0, 0.12);
+const Overlay = styled.div`
+  background-color: #ffffff;
+  border-radius: 8px;
+  height: 100%;
+  width: 100%;
+  box-shadow: 0px 4px 5px -2px rgba(0, 0, 0, 0.2), 0px 7px 10px 1px rgba(0, 0, 0, 0.14), 0px 2px 16px 1px rgba(0, 0, 0, 0.12);
+`
+
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: grid;
+`
+
+const FullContentWrapper = styled.div`
+  padding: 8px;
+  display: flex;
+  flex-flow: column;
+  overflow: auto;
+`
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-flow: row;
+  overflow: auto;
+  flex-grow: 1;
+  gap: 4px;
+`
+
+const ContentInner = styled.div`
+  flex-basis: 100%;
+  display: flex;
+  flex-flow: column;
+  overflow: auto;
 `
 
 interface TableProps {
@@ -20,53 +48,19 @@ export const Table = (props: TableProps) => {
 
   return (
     <Overlay>
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "grid"
-        }}
-      >
-        <div
-          style={{
-            padding: 8,
-            display: "flex",
-            flexFlow: "column",
-            overflow: "auto",
-            WebkitBoxFlex: 1,
-          }}
-        >
-
+      <Wrapper>
+        <FullContentWrapper>
           {header}
 
-          <div
-            style={{
-              display: "flex",
-              flexFlow: "row",
-              overflow: "auto",
-              WebkitBoxFlex: 1,
-              flexGrow: 1,
-              gap: 4,
-            }}
-          >
-            <div
-              style={{
-                flexBasis: "100%",
-                display: "flex",
-                flexFlow: "column",
-                overflow: "auto"
-              }}
-            >
-
+          <ContentWrapper>
+            <ContentInner>
               {content}
 
               {footer}
-
-            </div>
-          </div>
-        </div>
-
-      </div>
+            </ContentInner>
+          </ContentWrapper>
+        </FullContentWrapper>
+      </Wrapper>
     </Overlay>
   )
 }

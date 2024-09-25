@@ -19,9 +19,7 @@ export const Header = observer(() => {
   useEvent("keydown", (event) => {
     if (event.key === "Enter" && isFocused) {
       methods.handleSubmit((data) => {
-        // todosStore.changeSearch(data.search)
-        // todosStore.changeFilter(data.search)
-        console.log(data);
+        todosStore.changeSearch(data.search)
       })()
     }
   })

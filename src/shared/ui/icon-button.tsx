@@ -1,5 +1,5 @@
 import {Button, ButtonProps} from "antd";
-import {Icon, IconProps} from "./icon.tsx";
+import {Icon, IconProps} from "./icon";
 
 type IconButtonProps = {} & IconProps & ButtonProps
 

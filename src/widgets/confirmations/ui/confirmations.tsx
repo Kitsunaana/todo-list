@@ -1,9 +1,8 @@
 import {FC, PropsWithChildren, useState} from "react";
-import {ConfirmationModalParams} from "../model/types.ts"
-import {confirmationContext, ConfirmationParams} from "../../../shared/lib/confirmation.tsx";
-import {defaultConfirmationParams} from "../constants.ts";
-import {Button} from "antd";
-import {ConfirmationModal} from "./confirmation-modal.tsx";
+import {ConfirmationModalParams} from "../model/types"
+import {confirmationContext, ConfirmationParams} from "@shared/lib/confirmation";
+import {defaultConfirmationParams} from "../constants";
+import {ConfirmationModal} from "./confirmation-modal";
 
 export const Confirmations: FC<PropsWithChildren> = (props) => {
   const { children } = props

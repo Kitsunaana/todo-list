@@ -1,11 +1,12 @@
 import { todosStore } from "@entities/todo"
+import { TodoDto } from "@shared/types"
 import {Button, Flex, Typography} from "antd"
 import { observer } from "mobx-react-lite"
 
 const { Text } = Typography
 
-const filters = ["favorite", "open", "working", "done", "all"] as const
-const labels = {
+const filters: Array<TodoDto.Filters> = ["favorite", "open", "working", "done", "all"]
+const labels: Record<TodoDto.Filters, string> = {
   favorite: "Избранные",
   open: "Открытые",
   working: "В работе",

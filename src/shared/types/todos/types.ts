@@ -1,5 +1,10 @@
+export type Statuses = "done" | "working" | "open"
+export type Filters = "favorite" | "all" | "done" | "working" | "open"
+
+const s: Filters = ""
+
 export interface BaseTodoFields {
-  status: "done" | "working" | "open"
+  status: Statuses
   description: string
   name: string | null
 }

@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query"
 import { queryClient } from '@shared/config/query-client';
 import { TodoDto } from '@shared/types';
 import { todosApi } from '@shared/api/todos-api';
+import { todosStore } from '@entities/todo';
 
 export const useEditTodo = () => {
   const { mutate, isPending, isSuccess } = useMutation({
@@ -13,7 +14,7 @@ export const useEditTodo = () => {
       error: { render({ data }) { return data.message } }
     }),
     onSuccess(data) {
-      queryClient.setQueryData(["todos"], (oldData: TodoDto.GetTodosResponse) => {
+      queryClient.setQueryData(["todos", todosStore.url], (oldData: TodoDto.GetTodosResponse) => {
         return {
           ...oldData,
           data: oldData.data.map(todo => todo.id === data.id ? data : todo)

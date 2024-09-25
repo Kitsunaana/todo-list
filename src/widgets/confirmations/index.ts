@@ -1,1 +1,1 @@
-export { Confirmations } from "./ui/confirmations.tsx"
+export { Confirmations } from "./ui/confirmations"

@@ -3,27 +3,25 @@ import { Key, TodoPreviewSettings, Value } from "./types";
 import { MobxQuery } from "@shared/lib/mobx-react-query";
 import { todosApi } from "@shared/api/todos-api";
 import { queryClient } from "@shared/config/query-client";
-
-const URL = "https://cms.laurence.host/api/tasks"
+import { TodoDto } from "@shared/types";
+import { LOCAL_STORAGE_FAVORITES_KEY, LOCAL_STORAGE_KEYS, LOCAL_STORAGE_SETTINGS_KEY } from "./const";
 
 const initialSettings: TodoPreviewSettings = {
   isShowHatch: false
 }
-
-const LOCAL_STORAGE_SETTINGS_KEY = "kit-state-settings"
-const LOCAL_STORAGE_FAVORITES_KEY = "kit-state-favorites"
-
-const LOCAL_STORAGE_KEYS = [LOCAL_STORAGE_FAVORITES_KEY, LOCAL_STORAGE_SETTINGS_KEY]
 
 class TodosStore {
   selected: Record<number, boolean> = {}
   expanded: Record<number, boolean> = {}
   favorites: number[] = [0]
 
-  isShowSelected = false
-  settings = initialSettings
   search = ""
   filter = "all"
+  queryParams = ""
+
+  isShowSelected = false
+  settings = initialSettings
+
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true })
@@ -55,10 +53,9 @@ class TodosStore {
     })
   }
 
-  url = URL
   todosQuery = new MobxQuery(() => ({
-    queryKey: ["todos", this.url],
-    queryFn: () => todosApi.getAll(this.url),
+    queryKey: ["todos", this.queryParams],
+    queryFn: () => todosApi.getAll(this.queryParams),
   }), queryClient)
 
   get todos() {
@@ -69,17 +66,17 @@ class TodosStore {
     return this.todosQuery.result
   }
 
-  onChangeFilter(filter: "all" | "favorite" | "open" | "working" | "done") {
+  onChangeFilter(filter: TodoDto.Filters) {
     this.filter = filter
-
     let result = ""
+
     if (filter === "favorite") {
       result = this.favorites.map((favorite) => `filters[id]=${favorite}`).join("&")
     } else if (filter !== "all") {
       result = `filters[status]=${filter}`
     }
 
-    this.url = `${URL}?${result}`
+    this.queryParams = `${URL}?${result}`
   }
 
   changeSearch(value: string) {

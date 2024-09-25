@@ -21,7 +21,8 @@ export const CreateTodoForm = (props: CreateTodoFormProps) => {
         name="name"
         render={({ field }) => (
           <Input
-            {...field} 
+            {...field}
+            value={field.value ?? ""}
             placeholder="Название задачи"
             allowClear={true}
             disabled={isLoading}

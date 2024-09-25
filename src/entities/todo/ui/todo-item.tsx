@@ -7,6 +7,7 @@ import { IconButton } from "@shared/ui/icon-button";
 import { Typography } from "antd"
 import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 import { Icon } from "@shared/ui/icon";
+import { forwardRef } from "react";
 
 const { Text } = Typography
 
@@ -16,7 +17,7 @@ interface TodoItemProps {
   onRemove: (id: number, description: string) => void
 }
 
-export const TodoItem = observer((props: TodoItemProps) => {
+export const TodoItem = observer(forwardRef((props: TodoItemProps, ref) => {
   const { id, description, onRemove } = props
 
   const menu = useContextMenu()
@@ -24,6 +25,7 @@ export const TodoItem = observer((props: TodoItemProps) => {
 
   return (
     <Flex
+      ref={ref}
       key={id}
       align="center"
       justify="space-between"
@@ -58,4 +60,4 @@ export const TodoItem = observer((props: TodoItemProps) => {
       }} />
     </Flex>
   )
-})
+}))

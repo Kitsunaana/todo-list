@@ -45,7 +45,7 @@ export const useContextMenuPosition = (
 
   useLayoutEffect(() => {
     if (isOpen) updatePosition()
-  })
+  }, [isOpen])
 
   return updateClickCooridinates
 }

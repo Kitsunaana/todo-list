@@ -13,11 +13,11 @@ interface ContextMenuPopupProps {
   close: () => void
   onEdit: (id: number) => void
   onRemove: (id: number, description: string) => void
+  onChangeStatus: () => void
 }
 
 export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>((props, ref) => {
-  const { id,
-    close, onEdit, onRemove, description } = props
+  const { id, close, onEdit, onRemove, description, onChangeStatus } = props
 
   return (
     <ContextMenuPopup
@@ -53,6 +53,7 @@ export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>
           iconName="doDone"
           text="Выполнить"
           iconColor="#4caf50"
+          onClick={() => onChangeStatus()}
         />
       </Flex>
       <Divider style={{ margin: 0 }} />

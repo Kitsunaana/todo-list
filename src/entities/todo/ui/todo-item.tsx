@@ -18,10 +18,11 @@ interface TodoItemProps {
   description: string
   status: TodoDto.Statuses
   onRemove: (id: number, description: string) => void
+  onChangeStatus: () => void
 }
 
 export const TodoItem = observer(forwardRef<HTMLElement, TodoItemProps>((props, ref) => {
-  const { id, description, onRemove, status } = props
+  const { id, description, onRemove, status, onChangeStatus } = props
 
   const menu = useContextMenu()
   const upsertDialog = useUpsertDialog()
@@ -43,6 +44,7 @@ export const TodoItem = observer(forwardRef<HTMLElement, TodoItemProps>((props, 
           close={menu.close}
           onEdit={upsertDialog.onOpen}
           onRemove={onRemove}
+          onChangeStatus={onChangeStatus}
         />
       )}
       <Flex gap={8}>

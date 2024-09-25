@@ -86,6 +86,13 @@ class TodosStore {
     return this.favorites.includes(id)
   }
 
+  get selectedTodos() {
+    return this.filteredTodos.filter(todo => {
+      if (Object.keys(this.selected).map(Number).includes(todo.id)) return todo
+      return null
+    })
+  }
+
   get filteredTodos() {
     if (this.search === "") return this.todos
 

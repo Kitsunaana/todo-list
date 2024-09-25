@@ -10,10 +10,11 @@ import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 import { FilterPopup } from "./filter";
 import { useEvent } from "@shared/hooks/use-event";
 import { FilterFormFields } from "@pages/todos/todos-page";
-import { useRemoveTodos } from "@features/todo";
+import { useEditTodos, useRemoveTodos } from "@features/todo";
 
 export const Header = observer(() => {
   const onRemove = useRemoveTodos()
+  const onChangeStatus = useEditTodos()
 
   const [isFocused, setIsFocused] = useState(false);
   const methods = useForm<FilterFormFields>()
@@ -75,6 +76,7 @@ export const Header = observer(() => {
         <IconButton
           name="allDone"
           color="#2196f3"
+          onClick={() => onChangeStatus(todosStore.selectedTodos)}
         />
       )}
 

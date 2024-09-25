@@ -8,7 +8,7 @@ export const useEvent = <Key extends keyof HTMLElementEventMap>(
 ) => {
   useEffect(() => {
     const handle = shouldHandle instanceof Function ? shouldHandle() : shouldHandle
-    if (!handle) return
+    if (!handle) return () => { }
 
     const node = target instanceof Function ? target() : target
 
@@ -21,5 +21,5 @@ export const useEvent = <Key extends keyof HTMLElementEventMap>(
     }
 
     return () => "removeEventListener" in node ? node.removeEventListener(name, eventListener) : {}
-  })
+  }, [name, handler, shouldHandle, target])
 }

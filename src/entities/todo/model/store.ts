@@ -1,8 +1,5 @@
 import { makeAutoObservable, reaction } from "mobx";
 import { Key, TodoPreviewSettings, Value } from "./types";
-import { MobxQuery } from "@shared/lib/mobx-react-query";
-import { todosApi } from "@shared/api/todos-api";
-import { queryClient } from "@shared/config/query-client";
 import { TodoDto } from "@shared/types";
 import { LOCAL_STORAGE_FAVORITES_KEY, LOCAL_STORAGE_KEYS, LOCAL_STORAGE_SETTINGS_KEY } from "./const";
 
@@ -14,6 +11,7 @@ class TodosStore {
   selected: Record<number, boolean> = {}
   expanded: Record<number, boolean> = {}
   favorites: number[] = [0]
+  todos: TodoDto.Todo[] = []
 
   search = ""
   filter = "all"
@@ -53,17 +51,9 @@ class TodosStore {
     })
   }
 
-  todosQuery = new MobxQuery(() => ({
-    queryKey: ["todos", this.queryParams],
-    queryFn: () => todosApi.getAll(this.queryParams),
-  }), queryClient)
 
-  get todos() {
-    return this.todosQuery.data
-  }
-
-  get todosResult() {
-    return this.todosQuery.result
+  setTodos(todos: TodoDto.Todo[]) {
+    this.todos = todos
   }
 
   onChangeFilter(filter: TodoDto.Filters) {
@@ -76,7 +66,7 @@ class TodosStore {
       result = `filters[status]=${filter}`
     }
 
-    this.queryParams = `${URL}?${result}`
+    this.queryParams = `${result}`
   }
 
   changeSearch(value: string) {
@@ -93,9 +83,9 @@ class TodosStore {
   }
 
   get filteredTodos() {
-    if (this.search === "") return this.todosQuery.data.data
+    if (this.search === "") return this.todos
 
-    return this.todos.data.filter(todo => (
+    return this.todos.filter(todo => (
       todo.description.toUpperCase().includes(this.search.toUpperCase())
     ))
   }

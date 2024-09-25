@@ -6,12 +6,8 @@ const URL = "https://cms.laurence.host/api/tasks"
 export const todosApi = {
   getAll: async (queryParams?: string, pageParam?: number): Promise<TodoDto.GetTodosResponse> => {
     const response = await fetch(
-      queryParams
-        ? `${URL}?${queryParams}`
-        : `${URL}?sort=createdAt&pagination[pageSize]=3&pagination[page]=${pageParam}`, {
+      `${URL}?sort=createdAt&pagination[pageSize]=3&pagination[page]=${pageParam}&${queryParams}`, {
       method: "GET",
-      mode: "cors",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       }

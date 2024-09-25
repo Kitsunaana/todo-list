@@ -10,10 +10,7 @@ import { CreateTodoDialog, EditTodoDialog, useRemoveTodo } from "@features/todo"
 import { Loader } from "@shared/ui/loader";
 import { Mark } from "@shared/ui/mark";
 import { formattedDate } from "@shared/lib/date";
-import { useCallback, useMemo, useRef } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { todosApi } from "@shared/api/todos-api";
-import { TodoDto } from "@shared/types";
+import { useInfiniteQueryTodos } from "@entities/todo/queries/use-infinite-todos";
 
 const { Text } = Typography;
 
@@ -38,45 +35,6 @@ const CustomCollapse = styled(Collapse)`
   }
 `
 
-const useInfiniteQueryTodos = () => {
-  const observer = useRef<IntersectionObserver>()
-
-  const { data, isLoading, isError, refetch, hasNextPage, isFetching, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["todos"],
-    initialPageParam: 0,
-    queryFn: ({ pageParam }) => todosApi.getAll(undefined, pageParam),
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.data?.length ? allPages.length + 1 : undefined
-    },
-  })
-
-  const todos: TodoDto.GetTodosResponse["data"] = useMemo(() => {
-    return data?.pages.reduce((acc, page) => {
-      return [...acc, ...page.data]
-    }, [] as TodoDto.GetTodosResponse["data"]) ?? []
-  }, [data])
-
-  const lastElementRef = useCallback((node: HTMLDivElement) => {
-    if (isLoading) return
-
-    if (observer.current) observer.current.disconnect()
-
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasNextPage && !isFetching) fetchNextPage()
-    })
-
-    if (node) observer.current.observe(node)
-  }, [fetchNextPage, hasNextPage, isFetching, isLoading])
-
-  return {
-    todos,
-    isLoading,
-    isError,
-    refetch,
-    lastElementRef
-  }
-}
-
 const TodosPage = observer(() => {
   const onRemove = useRemoveTodo()
   const methods = useForm<FilterFormFields>({
@@ -87,12 +45,12 @@ const TodosPage = observer(() => {
     todosStore.onChangeCollapse(Array.isArray(key) ? key : [key])
   };
 
-  const { isError, isLoading, lastElementRef, todos, refetch } = useInfiniteQueryTodos()
-  
+  const { isError, isLoading, lastElementRef, refetch } = useInfiniteQueryTodos()
+
   let items: CollapseProps["items"]  = []
 
   if (!isLoading && !isError) {
-    items = (todos ?? []).map((todo) => ({
+    items = todosStore.filteredTodos.map((todo) => ({
       key: todo.id,
       label: (
         <TodoItem
@@ -135,7 +93,7 @@ const TodosPage = observer(() => {
         />
       )
     }
-    if (!todos) {
+    if (todosStore.filteredTodos.length === 0) {
       return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
     }
   }
@@ -148,7 +106,7 @@ const TodosPage = observer(() => {
             <Header />
           </FormProvider>
         )}
-        content={(todos ?? []).length === 0 ? (renderContent()) : (
+        content={todosStore.filteredTodos.length === 0 ? (renderContent()) : (
           (<CustomCollapse
             defaultActiveKey={Object.keys(todosStore.expanded)}
             activeKey={Object.keys(todosStore.expanded)}

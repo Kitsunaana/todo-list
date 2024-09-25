@@ -84,7 +84,8 @@ export const Header = observer(() => {
 
       <IconButton
         name="reload"
-        color="#fb8c00"
+        disabled
+        // color="#fb8c00"
         onClick={() => todosStore.todosResult.refetch()}
       />
     </Flex>

@@ -17,7 +17,7 @@ interface TodoItemProps {
   onRemove: (id: number, description: string) => void
 }
 
-export const TodoItem = observer(forwardRef((props: TodoItemProps, ref) => {
+export const TodoItem = observer(forwardRef<HTMLElement, TodoItemProps>((props, ref) => {
   const { id, description, onRemove } = props
 
   const menu = useContextMenu()

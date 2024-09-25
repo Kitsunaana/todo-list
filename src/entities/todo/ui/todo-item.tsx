@@ -8,17 +8,20 @@ import { Typography } from "antd"
 import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 import { Icon } from "@shared/ui/icon";
 import { forwardRef } from "react";
+import { TodoDto } from "@shared/types";
+import { TodoStatus } from "./todo-status";
 
 const { Text } = Typography
 
 interface TodoItemProps {
   id: number
   description: string
+  status: TodoDto.Statuses
   onRemove: (id: number, description: string) => void
 }
 
 export const TodoItem = observer(forwardRef<HTMLElement, TodoItemProps>((props, ref) => {
-  const { id, description, onRemove } = props
+  const { id, description, onRemove, status } = props
 
   const menu = useContextMenu()
   const upsertDialog = useUpsertDialog()
@@ -44,20 +47,31 @@ export const TodoItem = observer(forwardRef<HTMLElement, TodoItemProps>((props, 
       )}
       <Flex gap={8}>
         {todosStore.isShowSelected && (
-          <Checkbox checked={todosStore.selected[id]} onClick={(event) => {
-            event.stopPropagation()
-            todosStore.onToggleSelected(id)
-          }} />
+          <Checkbox 
+            checked={todosStore.selected[id]} 
+            onClick={(event) => {
+              event.stopPropagation()
+              todosStore.onToggleSelected(id)
+            }} 
+          />
         )}
-        {todosStore.favorites.includes(id) && (
+        {todosStore.hasFavorites(id) && (
           <Icon name="addFavorite" color="#e91e63" />
         )}
         <Text>{description}</Text>
       </Flex>
-      <IconButton name="actions" onClick={(event) => {
-        event.stopPropagation()
-        menu.open(event)
-      }} />
+      <Flex align="center" gap={8}>
+        {!todosStore.settings.isShowStatus && (
+          <TodoStatus status={status} />
+        )}
+        <IconButton 
+          name="actions" 
+          onClick={(event) => {
+            event.stopPropagation()
+            menu.open(event)
+          }} 
+        />
+      </Flex>
     </Flex>
   )
 }))

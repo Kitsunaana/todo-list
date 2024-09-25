@@ -1,18 +1,9 @@
 import { todosStore } from "@entities/todo"
-import { TodoDto } from "@shared/types"
+import { filters, labels } from "@shared/const/filters"
 import {Button, Flex, Typography} from "antd"
 import { observer } from "mobx-react-lite"
 
 const { Text } = Typography
-
-const filters: Array<TodoDto.Filters> = ["favorite", "open", "working", "done", "all"]
-const labels: Record<TodoDto.Filters, string> = {
-  favorite: "Избранные",
-  open: "Открытые",
-  working: "В работе",
-  done: "Выполненые",
-  all: "Все"
-}
 
 export const FilterPopup = observer(() => {
   return (

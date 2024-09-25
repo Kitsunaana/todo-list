@@ -16,7 +16,8 @@ export const PreviewSettingsDivider = styled(Divider)`
 `
 
 const labels: Record<Types.Key, string> = {
-  isShowHatch: "Штриховку"
+  isShowHatch: "Штриховку",
+  isShowStatus: "Статус"
 }
 
 export const TodoPreviewSettings = observer(() => {

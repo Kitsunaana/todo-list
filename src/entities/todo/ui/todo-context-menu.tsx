@@ -3,19 +3,21 @@ import { ContextMenuButton } from "@shared/ui/context-menu-button"
 import { Divider, Flex, Typography } from "antd"
 import { forwardRef } from "react"
 import { todosStore } from "../model/store"
+import { Mark } from "@shared/ui/mark"
 
 const { Text } = Typography
 
 interface ContextMenuPopupProps {
   id: number
+  description: string
   close: () => void
   onEdit: (id: number) => void
   onRemove: (id: number, description: string) => void
-  description: string
 }
 
 export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>((props, ref) => {
-  const { id, close, onEdit, onRemove, description } = props
+  const { id,
+    close, onEdit, onRemove, description } = props
 
   return (
     <ContextMenuPopup
@@ -55,7 +57,7 @@ export const TodoContextMenu = forwardRef<HTMLDivElement, ContextMenuPopupProps>
       </Flex>
       <Divider style={{ margin: 0 }} />
       <Flex vertical gap={8} align="center">
-        <Text>ID {id}</Text>
+        <Text>ID <Mark>{id}</Mark></Text>
       </Flex>
     </ContextMenuPopup>
   )

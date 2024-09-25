@@ -3,14 +3,14 @@ import {observer} from "mobx-react-lite";
 import {FormProvider, useForm} from "react-hook-form";
 import {Footer} from "./ui/footer/footer";
 import {Header} from "./ui/header/header";
-import {todosStore, backgroundStyles, TodoItem} from "@entities/todo";
+import {todosStore, backgroundStyles, TodoItem, useInfiniteQueryTodos} from "@entities/todo";
 import {Table} from "@shared/ui/table";
 import styled from "styled-components";
 import { CreateTodoDialog, EditTodoDialog, useRemoveTodo } from "@features/todo";
 import { Loader } from "@shared/ui/loader";
 import { Mark } from "@shared/ui/mark";
 import { formattedDate } from "@shared/lib/date";
-import { useInfiniteQueryTodos } from "@entities/todo/queries/use-infinite-todos";
+import { TodoDto } from "@shared/types";
 
 const { Text } = Typography;
 
@@ -35,6 +35,37 @@ const CustomCollapse = styled(Collapse)`
   }
 `
 
+const createTodo = (
+  todo: TodoDto.Todo, 
+  lastElementRef: (node: HTMLDivElement) => void, 
+  onRemove: (todoId: number, description: string) => Promise<void>
+) => {
+  return {
+    key: todo.id,
+    label: (
+      <TodoItem
+        key={todo.id}
+        ref={lastElementRef}
+        id={todo.id}
+        status={todo.status}
+        description={todo.description}
+        onRemove={onRemove}
+      />
+    ),
+    children: [(
+      <Text key={todo.id}>
+        Дата публикации задачи: <Mark>{formattedDate(todo.publishedAt)}</Mark>
+      </Text>
+    )],
+    style: {
+      ...backgroundStyles[todo.status],
+      ...(!todosStore.settings.isShowHatch ? {} : {
+        backgroundImage: "unset"
+      })
+    },
+  }
+}
+
 const TodosPage = observer(() => {
   const onRemove = useRemoveTodo()
   const methods = useForm<FilterFormFields>({
@@ -47,36 +78,15 @@ const TodosPage = observer(() => {
 
   const { isError, isLoading, lastElementRef, refetch } = useInfiniteQueryTodos()
 
-  let items: CollapseProps["items"]  = []
-
+  let items: CollapseProps["items"] = []
   if (!isLoading && !isError) {
-    items = todosStore.filteredTodos.map((todo) => ({
-      key: todo.id,
-      label: (
-        <TodoItem
-          ref={lastElementRef}
-          key={todo.id}
-          description={todo.description}
-          id={todo.id}
-          onRemove={onRemove}
-        />
-      ),
-      children: [(
-        <Text key={todo.id}>
-          Дата публикации задачи: <Mark>{formattedDate(todo.publishedAt)}</Mark>
-        </Text>
-      )],
-      style: {
-        ...backgroundStyles[todo.status],
-        ...(!todosStore.settings.isShowHatch ? {} : {
-          backgroundImage: "unset"
-        })
-      },
-    }))
+    items = todosStore.filteredTodos
+      .map(todo => createTodo(todo, lastElementRef, onRemove))
   }
 
   const renderContent = () => {
     if (isLoading) return <Loader />
+
     if (isError) {
       return (
         <Result
@@ -93,6 +103,7 @@ const TodosPage = observer(() => {
         />
       )
     }
+
     if (todosStore.filteredTodos.length === 0) {
       return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
     }

@@ -4,7 +4,8 @@ import { TodoDto } from "@shared/types";
 import { LOCAL_STORAGE_FAVORITES_KEY, LOCAL_STORAGE_KEYS, LOCAL_STORAGE_SETTINGS_KEY } from "./const";
 
 const initialSettings: TodoPreviewSettings = {
-  isShowHatch: false
+  isShowHatch: false,
+  isShowStatus: false
 }
 
 class TodosStore {
@@ -19,7 +20,6 @@ class TodosStore {
 
   isShowSelected = false
   settings = initialSettings
-
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true })
@@ -51,7 +51,6 @@ class TodosStore {
     })
   }
 
-
   setTodos(todos: TodoDto.Todo[]) {
     this.todos = todos
   }
@@ -71,6 +70,7 @@ class TodosStore {
 
   changeSearch(value: string) {
     if (this.search === value) return
+
     this.search = value.trim()
   }
 
@@ -80,6 +80,10 @@ class TodosStore {
       : this.favorites.concat([id])
 
     localStorage.setItem(LOCAL_STORAGE_FAVORITES_KEY, JSON.stringify(this.favorites))
+  }
+
+  hasFavorites(id: number) {
+    return this.favorites.includes(id)
   }
 
   get filteredTodos() {

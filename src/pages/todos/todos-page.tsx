@@ -11,6 +11,7 @@ import { Loader } from "@shared/ui/loader";
 import { Mark } from "@shared/ui/mark";
 import { formattedDate } from "@shared/lib/date";
 import { TodoDto } from "@shared/types";
+import { useEffect } from "react";
 
 const { Text } = Typography;
 

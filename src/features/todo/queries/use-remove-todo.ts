@@ -1,6 +1,9 @@
 import { todosApi } from "@shared/api/todos-api";
+import { queryClient } from "@shared/config/query-client";
 import { useGetConfirmation } from "@shared/lib/confirmation";
+import { TodoDto } from "@shared/types";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 
 export const useRemoveTodo = () => {
@@ -8,7 +11,18 @@ export const useRemoveTodo = () => {
 
   const mutation = useMutation({
     mutationKey: ["todos"],
-    mutationFn: (id: number) => todosApi
+    mutationFn: (id: number) => toast.promise<number, Error>(todosApi.removeTodo(id), {
+      error: { render({ data }) { return data.message } },
+      success: "Задача успешно удалена"
+    }),
+    onSuccess: (todoId) => {
+      queryClient.setQueryData(["todos"], (oldData: TodoDto.GetTodosResponse): TodoDto.GetTodosResponse => {
+        return {
+          ...oldData,
+          data: oldData.data.filter(todo => todo.id !== todoId)
+        }
+      })
+    }
   })
 
   return async (todoId: number, description: string) => {
@@ -19,8 +33,6 @@ export const useRemoveTodo = () => {
       `
     })
 
-    if (confirmation) {
-      console.log(todoId)
-    }
+    if (confirmation) mutation.mutate(todoId)
   }
 }

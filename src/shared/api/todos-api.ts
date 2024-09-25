@@ -71,9 +71,7 @@ export const todosApi = {
     const response = await fetch(`${URL}/${payload.id}`, {
       method: "PUT",
       body: JSON.stringify({ data: payload }),
-      headers: {
-        "Content-Type": "application/json",
-      }
+      headers: { "Content-Type": "application/json" }
     })
 
     const data = await response.json()
@@ -87,6 +85,15 @@ export const todosApi = {
   },
 
   removeTodo: async (todoId: number) => {
+    const response = await fetch(`${URL}/${todoId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" }
+    })
 
+    const data = await response.json()
+
+    if (data?.error?.message) throw new Error(data?.error?.message)
+
+    return todoId
   }
 }

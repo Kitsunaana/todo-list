@@ -68,6 +68,8 @@ export const todosApi = {
   },
 
   editTodo: async (payload: TodoDto.EditTodo) => {
+    console.log(payload)
+
     const response = await fetch(`${URL}/${payload.id}`, {
       method: "PUT",
       body: JSON.stringify({ data: payload }),

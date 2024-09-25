@@ -21,7 +21,8 @@ export const EditTodoForm = (props: EditTodoFormProps) => {
         name="name"
         render={({ field }) => (
           <Input
-            {...field} 
+            {...field}
+            value={field.value ?? ""}
             placeholder="Название задачи"
             allowClear={true}
             disabled={isLoading}
@@ -54,26 +55,32 @@ export const EditTodoForm = (props: EditTodoFormProps) => {
         )}
       />
 
-      <Select
-        showSearch
-        placeholder="Select a person"
-        optionFilterProp="label"
-        defaultValue={"open"}
-        disabled={isLoading}
-        options={[
-          {
-            value: 'open',
-            label: 'Создано',
-          },
-          {
-            value: 'working',
-            label: 'В работе',
-          },
-          {
-            value: 'done',
-            label: 'Выполнено',
-          },
-        ]}
+      <Controller 
+        name="status"
+        render={({ field }) => (
+          <Select
+            {...field}
+            showSearch
+            placeholder="Select a person"
+            optionFilterProp="label"
+            defaultValue={"open"}
+            disabled={isLoading}
+            options={[
+              {
+                value: 'open',
+                label: 'Создано',
+              },
+              {
+                value: 'working',
+                label: 'В работе',
+              },
+              {
+                value: 'done',
+                label: 'Выполнено',
+              },
+            ]}
+          />
+        )}
       />
     </Flex>
   )

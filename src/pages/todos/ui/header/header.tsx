@@ -10,11 +10,20 @@ import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 import { FilterPopup } from "./filter";
 import { useEvent } from "@shared/hooks/use-event";
 import { FilterFormFields } from "@pages/todos/todos-page";
+import { useRemoveTodos } from "@features/todo";
 
 export const Header = observer(() => {
+  const onRemove = useRemoveTodos()
+
   const [isFocused, setIsFocused] = useState(false);
   const methods = useForm<FilterFormFields>()
   const { onOpen } = useUpsertDialog()
+
+  const handleRemoveTodos = () => {
+    const description = "Вы уверены, что хотите удалить все выбранные задачи?"
+
+    onRemove(Object.keys(todosStore.selected).filter(Boolean).map(Number), description)
+  }
 
   useEvent("keydown", (event) => {
     if (event.key === "Enter" && isFocused) {
@@ -71,6 +80,7 @@ export const Header = observer(() => {
 
       {todosStore.selectedLength > 0 && (
         <IconButton
+          onClick={handleRemoveTodos}
           name="remove"
           color="#e53935"
         />
@@ -80,13 +90,6 @@ export const Header = observer(() => {
         name="add"
         color="#66bb6a"
         onClick={() => onOpen()}
-      />
-
-      <IconButton
-        name="reload"
-        disabled
-        // color="#fb8c00"
-        onClick={() => todosStore.todosResult.refetch()}
       />
     </Flex>
   )

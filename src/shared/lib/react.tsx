@@ -1,4 +1,4 @@
-import {Children, Context, createContext, createElement, isValidElement, ReactNode, useContext} from "react";
+import { Children, Context, createContext, createElement, isValidElement, ReactNode, useContext } from "react";
 
 export const useStrictContext = <T, >(context: Context<T | null>) => {
   const value = useContext(context)

@@ -1,4 +1,4 @@
-import { BaseTodoFields } from "@shared/types/todos/types"
+import { BaseTodoFields } from "@shared/types/todos/types";
 
 export interface CreateTodoFormFields extends BaseTodoFields { }
 

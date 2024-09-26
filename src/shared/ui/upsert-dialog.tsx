@@ -1,9 +1,9 @@
 import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
 import { Modal, Typography } from "antd";
-import { observer } from "mobx-react-lite"
-import { ReactNode } from "react"
+import { observer } from "mobx-react-lite";
+import { ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
-import styled from "styled-components"
+import styled from "styled-components";
 
 const { Text } = Typography;
 

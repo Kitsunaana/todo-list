@@ -1,8 +1,8 @@
-import { makeAutoObservable, reaction } from "mobx";
-import { Key, TodoPreviewSettings, Value } from "./types";
 import { TodoDto } from "@shared/types";
-import { LOCAL_STORAGE_FAVORITES_KEY, LOCAL_STORAGE_KEYS, LOCAL_STORAGE_SETTINGS_KEY } from "./const";
+import { makeAutoObservable, reaction } from "mobx";
 import queryString from "query-string";
+import { LOCAL_STORAGE_FAVORITES_KEY, LOCAL_STORAGE_KEYS, LOCAL_STORAGE_SETTINGS_KEY } from "./const";
+import { Key, TodoPreviewSettings, Value } from "./types";
 
 const initialSettings: TodoPreviewSettings = {
   isShowHatch: false,
@@ -74,7 +74,7 @@ class TodosStore {
     }
   }
 
-  changeSearch(value: string, saveToPath: boolean = true) {
+  onChangeSearch(value: string, saveToPath: boolean = true) {
     this.search = value.trim()
 
     if (saveToPath) {

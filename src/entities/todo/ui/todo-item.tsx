@@ -1,14 +1,13 @@
 import { useContextMenu } from "@shared/hooks/use-context-menu";
-import { Checkbox, Flex } from "antd";
-import { observer } from "mobx-react-lite";
-import { TodoContextMenu } from "./todo-context-menu";
-import { todosStore } from "../model/store";
-import { IconButton } from "@shared/ui/icon-button";
-import { Typography } from "antd"
 import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
-import { Icon } from "@shared/ui/icon";
-import { forwardRef } from "react";
 import { TodoDto } from "@shared/types";
+import { Icon } from "@shared/ui/icon";
+import { IconButton } from "@shared/ui/icon-button";
+import { Checkbox, Flex, Typography } from "antd";
+import { observer } from "mobx-react-lite";
+import { forwardRef } from "react";
+import { todosStore } from "../model/store";
+import { TodoContextMenu } from "./todo-context-menu";
 import { TodoStatus } from "./todo-status";
 
 const { Text } = Typography

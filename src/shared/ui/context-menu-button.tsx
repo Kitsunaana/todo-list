@@ -1,6 +1,6 @@
+import { Button, ButtonProps } from "antd"
 import styled from "styled-components"
 import { Icon, IconNames } from "./icon"
-import { Button, ButtonProps } from "antd"
 
 interface ContextMenuButtonProps extends ButtonProps {
   iconName: IconNames

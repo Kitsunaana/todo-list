@@ -1,1 +1,1 @@
-export { Confirmations } from "./ui/confirmations"
+export { Confirmations } from "./ui/confirmations";

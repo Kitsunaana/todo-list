@@ -1,5 +1,5 @@
-import {Button, ButtonProps} from "antd";
-import {Icon, IconProps} from "./icon";
+import { Button, ButtonProps } from "antd";
+import { Icon, IconProps } from "./icon";
 
 type IconButtonProps = {} & IconProps & Omit<ButtonProps, "color">
 

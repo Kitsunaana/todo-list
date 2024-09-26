@@ -1,5 +1,5 @@
 import { validation } from "../lib/zod-validation";
-import { TodoSchemas, TodoDto } from "../types"
+import { TodoDto, TodoSchemas } from "../types";
 
 const URL = "https://cms.laurence.host/api/tasks"
 

@@ -1,8 +1,7 @@
+import { todosStore, Types } from "@entities/todo";
+import { Divider, Flex, Switch, Typography } from "antd";
+import { observer } from "mobx-react-lite";
 import styled from "styled-components";
-import {Divider, Flex, Switch} from "antd";
-import {observer} from "mobx-react-lite";
-import {todosStore, Types} from "@entities/todo";
-import { Typography } from 'antd';
 
 const { Text } = Typography;
 

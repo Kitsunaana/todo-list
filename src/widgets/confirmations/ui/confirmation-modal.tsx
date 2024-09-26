@@ -1,7 +1,7 @@
-import {ConfirmationModalParams} from "../model/types";
-import {Button, Typography} from "antd"
-import {Modal} from "@shared/ui/modal";
 import { useEvent } from "@shared/hooks/use-event";
+import { Modal } from "@shared/ui/modal";
+import { Button, Typography } from "antd";
+import { ConfirmationModalParams } from "../model/types";
 
 const { Text } = Typography
 

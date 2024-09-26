@@ -1,9 +1,9 @@
 import { ContextMenuPopup } from "@shared/ui/context-menu"
 import { ContextMenuButton } from "@shared/ui/context-menu-button"
+import { Mark } from "@shared/ui/mark"
 import { Divider, Flex, Typography } from "antd"
 import { forwardRef } from "react"
 import { todosStore } from "../model/store"
-import { Mark } from "@shared/ui/mark"
 
 const { Text } = Typography
 

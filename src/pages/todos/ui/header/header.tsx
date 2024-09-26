@@ -1,17 +1,17 @@
-import {Controller, useForm, useFormContext} from "react-hook-form";
-import {Button, Flex, Input, Popover} from "antd";
-import {Icon} from "@shared/ui/icon";
-import {IconButton} from "@shared/ui/icon-button";
-import {todosStore} from "@entities/todo";
-import {useState} from "react";
-import {TodoPreviewSettings} from "./settings";
-import { observer } from "mobx-react-lite";
-import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
-import { FilterPopup } from "./filter";
-import { useEvent } from "@shared/hooks/use-event";
-import { FilterFormFields } from "@pages/todos/todos-page";
+import { todosStore } from "@entities/todo";
 import { useEditTodos, useRemoveTodos } from "@features/todo";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { FilterFormFields } from "@pages/todos/todos-page";
+import { useEvent } from "@shared/hooks/use-event";
+import { useUpsertDialog } from "@shared/hooks/use-upsert-dialog";
+import { Icon } from "@shared/ui/icon";
+import { IconButton } from "@shared/ui/icon-button";
+import { Button, Flex, Input, Popover } from "antd";
+import { observer } from "mobx-react-lite";
+import { useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { FilterPopup } from "./filter";
+import { TodoPreviewSettings } from "./settings";
 
 export const Header = observer(() => {
   const onRemove = useRemoveTodos()
@@ -31,7 +31,7 @@ export const Header = observer(() => {
   useEvent("keydown", (event) => {
     if (event.key === "Enter" && isFocused) {
       methods.handleSubmit((data) => {
-        todosStore.changeSearch(data.search)
+        todosStore.onChangeSearch(data.search)
       })()
     }
   })

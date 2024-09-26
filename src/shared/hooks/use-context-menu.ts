@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react"
-import { useContextMenuPosition } from "./use-context-menu-position"
 import { useClickAway } from "./use-click-away"
+import { useContextMenuPosition } from "./use-context-menu-position"
 import { useEvent } from "./use-event"
 
 export const useContextMenu = () => {

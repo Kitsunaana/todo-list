@@ -1,20 +1,20 @@
-import {Button, Collapse, CollapseProps, Empty, Result, Typography} from "antd";
-import {observer} from "mobx-react-lite";
-import {FormProvider, useForm} from "react-hook-form";
-import {Footer} from "./ui/footer/footer";
-import {Header} from "./ui/header/header";
-import {todosStore, backgroundStyles, TodoItem, useInfiniteQueryTodos} from "@entities/todo";
-import {Table} from "@shared/ui/table";
-import styled from "styled-components";
+import { backgroundStyles, TodoItem, todosStore, useInfiniteQueryTodos } from "@entities/todo";
 import { CreateTodoDialog, EditTodoDialog, useRemoveTodo } from "@features/todo";
+import { useEditTodo } from "@features/todo/queries/use-edit-todo";
+import { formattedDate } from "@shared/lib/date";
+import { TodoDto } from "@shared/types";
 import { Loader } from "@shared/ui/loader";
 import { Mark } from "@shared/ui/mark";
-import { formattedDate } from "@shared/lib/date";
-import { useEditTodo } from "@features/todo/queries/use-edit-todo";
+import { Table } from "@shared/ui/table";
+import { Button, Collapse, CollapseProps, Empty, Result, Typography } from "antd";
+import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { TodoDto } from "@shared/types";
-import { filters } from "./ui/header/filter";
+import { FormProvider, useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
+import styled from "styled-components";
+import { Footer } from "./ui/footer/footer";
+import { filters } from "./ui/header/filter";
+import { Header } from "./ui/header/header";
 
 const { Text } = Typography;
 
@@ -60,8 +60,8 @@ const TodosPage = observer(() => {
 
     methods.setValue("search", search ?? "")
 
-    if (searchIsValid(search)) todosStore.changeSearch(search, false)
-    if (filterIsValid(filter)) todosStore.onChangeFilter(filter ?? "all", false)
+    if (searchIsValid(search)) todosStore.onChangeSearch(search, false)
+    if (filterIsValid(filter)) todosStore.onChangeFilter(filter, false)
   }, [searchParams])
 
   const items: CollapseProps["items"] = todosStore

@@ -1,7 +1,7 @@
-import { toast } from 'react-toastify';
-import { useQuery } from "@tanstack/react-query"
-import { TodoDto } from '@shared/types';
 import { todosApi } from '@shared/api/todos-api';
+import { TodoDto } from '@shared/types';
+import { useQuery } from "@tanstack/react-query";
+import { toast } from 'react-toastify';
 
 export const useGetTodo = (id: number) => {
   const { data, isPending, isError } = useQuery({

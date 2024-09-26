@@ -1,5 +1,5 @@
 import { todosStore } from "@entities/todo"
-import {Button, Flex, Typography} from "antd"
+import { Button, Flex, Typography } from "antd"
 import { observer } from "mobx-react-lite"
 
 const { Text } = Typography

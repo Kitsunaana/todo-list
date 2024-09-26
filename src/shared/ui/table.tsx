@@ -1,5 +1,5 @@
+import { ReactNode } from "react";
 import styled from "styled-components";
-import {ReactNode} from "react";
 
 const Overlay = styled.div`
   background-color: #ffffff;

@@ -1,8 +1,8 @@
 import { TodoDto } from "@shared/types"
 import { Mark } from "@shared/ui/mark"
-import { todosStore } from "../model/store"
 import { Typography } from "antd"
 import { statusOptions } from "../model/const"
+import { todosStore } from "../model/store"
 
 const { Text } = Typography
 

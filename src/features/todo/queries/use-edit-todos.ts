@@ -1,6 +1,6 @@
 import { useGetConfirmation } from "@shared/lib/confirmation"
-import { useEditTodo } from "./use-edit-todo"
 import { TodoDto } from "@shared/types"
+import { useEditTodo } from "./use-edit-todo"
 
 export const useEditTodos = () => {
   const getConfirmation = useGetConfirmation()

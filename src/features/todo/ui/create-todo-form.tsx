@@ -1,7 +1,7 @@
-import { Flex, Input, Select, Typography } from "antd"
-import { Controller, useFormContext } from "react-hook-form"
-import { CreateTodoFormFields } from "../types/types";
+import { Flex, Input, Select, Typography } from "antd";
+import { Controller, useFormContext } from "react-hook-form";
 import { statusOptions } from "../const";
+import { CreateTodoFormFields } from "../types/types";
 
 const { Text } = Typography;
 const { TextArea } = Input

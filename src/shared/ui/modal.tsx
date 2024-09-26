@@ -1,8 +1,8 @@
+import { ReactNode } from "react";
+import { createPortal } from "react-dom";
 import styled from "styled-components";
-import {ReactNode} from "react";
-import {useEvent} from "../hooks/use-event";
-import {CrossLightIcon} from "./close-icon";
-import {createPortal} from "react-dom";
+import { useEvent } from "../hooks/use-event";
+import { CrossLightIcon } from "./close-icon";
 
 const ModalWrapper = styled.div`
   position: fixed;

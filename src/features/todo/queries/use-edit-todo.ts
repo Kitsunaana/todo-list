@@ -1,10 +1,10 @@
-import { toast } from 'react-toastify';
-import { EditTodo } from "@shared/types/todos/types"
-import { useMutation } from "@tanstack/react-query"
+import { todosStore } from '@entities/todo';
+import { todosApi } from '@shared/api/todos-api';
 import { queryClient } from '@shared/config/query-client';
 import { TodoDto } from '@shared/types';
-import { todosApi } from '@shared/api/todos-api';
-import { todosStore } from '@entities/todo';
+import { EditTodo } from "@shared/types/todos/types";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from 'react-toastify';
 
 export const useEditTodo = () => {
   const { mutate, isPending, isSuccess } = useMutation({

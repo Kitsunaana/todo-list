@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { validation } from "../lib/zod-validation";
 import { TodoDto, TodoSchemas } from "../types";
 
@@ -16,11 +17,18 @@ export const todosApi = {
     const data = await response.json()
 
     const filteredData = {
-      ...data, data: data?.data?.filter(todo => (
-        !["done", "working", "open"].includes(todo?.status)
-      ))
+      ...data,
+      data: data?.data?.filter(todo => {
+        console.log(todo);
+
+        if (["done", "working", "open"].includes(todo?.attributes?.status)) return todo
+        return null
+      })
     }
 
+    console.log(filteredData);
+
+    TodoSchemas.todosSchema.parse(filteredData)
     const validatedData = validation(TodoSchemas.todosSchema, filteredData)
 
     const transformedData = {

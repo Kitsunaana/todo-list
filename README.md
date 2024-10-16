@@ -1,3 +1,10 @@
+## Создание задачи (работает)
+![Создание задачи](assets/2024-10-1612-09-09-ezgif.com-video-to-gif-converter.gif)
+
+## Проверка Infinite scroll (работает)
+Данные получаю не одним запросом, а несколькими, только в том случае, если последний элемент попадает во viewport
+![Infinite scroll](assets/2024-10-1612-15-40-ezgif.com-video-to-gif-converter.gif)
+
 ## Запуск
 `npm start`
 

@@ -7,12 +7,14 @@ const URL = "https://cms.laurence.host/api/tasks"
 export const todosApi = {
   getAll: async (queryParams?: string, pageParam?: number): Promise<TodoDto.GetTodosResponse> => {
     const response = await fetch(
-      `${URL}?sort=createdAt&pagination[pageSize]=3&pagination[page]=${pageParam}&${queryParams}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+      `${URL}?sort=createdAt&pagination[pageSize]=3&pagination[page]=${pageParam}&${queryParams}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    })
+    )
 
     const data = await response.json()
 
@@ -27,8 +29,8 @@ export const todosApi = {
     }
 
     console.log(filteredData);
-
     TodoSchemas.todosSchema.parse(filteredData)
+
     const validatedData = validation(TodoSchemas.todosSchema, filteredData)
 
     const transformedData = {
